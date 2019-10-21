@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>d3 Scatter Plot</title>
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- Styles for our vis  -->
+    <style>
+      body {
+          font: 15px sans-serif;
+      }
+
+      .axis path,
+      .axis line {
+          fill: none;
+          stroke: #000;
+          shape-rendering: crispEdges;
+      }
+
+      .dot {
+          stroke: none;
+      }
+      .tooltip {
+          position: absolute;
+          font-size: 12px;
+          width:  auto;
+          height: auto;
+          pointer-events: none;
+          background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="vis-container"></div>
+    <script type="text/javascript">
+
+      d3.csv('data/cereal.csv', function(d) {
+          return {
+              calories: +d.calories,
+              sugar: +d.sugar,
+              manufacturer: d.manufacturer,
+              cereal: d.cereal
+          };
+      }).then(function(data) {
+          makeVis(data);
+      });
+
+      var makeVis = function(data) {
+          // Common pattern for defining vis size and margins
+
+          var margin = { top: 20, right: 20, bottom: 40, left: 60 },
+              width = 640 - margin.left - margin.right,
+              height = 640/1.618 - margin.top - margin.bottom;
+
+          // Add the visualization svg canvas to the vis-container <div>
+          var svg = d3.select("#vis-container")
+              .append("svg")
+              .attr("width",  width  + margin.left + margin.right)
+              .attr("height", height + margin.top  + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          // Define our scales
+          var xScale = d3.scaleLinear()
+              .domain([ d3.min(data, function(d) { return d.sugar; }) - 1,
+                        d3.max(data, function(d) { return d.sugar; }) + 1 ])
+              .range([0, width]);
+
+          var yScale = d3.scaleLinear()
+              .domain([ d3.min(data, function(d) { return d.calories; }) - 1,
+                        d3.max(data, function(d) { return d.calories; }) + 1 ])
+              .range([height, 0]);
+
+          // Define our axes
+          var xAxis = d3.axisBottom(xScale);
+          var yAxis = d3.axisLeft(yScale);
+
+          // Add x-axis to the svg
+          svg.append("g")
+              .attr("class", "x axis")
+              .attr("transform", "translate(0," + height + ")")
+              .call(xAxis);
+
+          svg.append("text")
+              .attr("transform",
+                    "translate(" + (width/2) + " ," +
+                    (height + margin.top + 15) + ")")
+              .style("text-anchor", "middle")
+              .text("Sugar");
+
+          // Add y-axis to the svg
+          svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis);
+
+          svg.append("text")
+              .attr("transform", "rotate(-90)")
+              .attr("y", 0 - margin.left + 20)
+              .attr("x", 0 - (height / 2))
+              .style("text-anchor", "middle")
+              .text("Calories");
+
+          // Add data points!
+          svg.selectAll(".dot")
+              .data(data)
+              .enter().append("circle")
+              .attr("class", "dot")
+              .attr("r", 5.5) // radius size, could map to another data dimension
+              .attr("cx", function(d) { return xScale( d.sugar ); })     // x position
+              .attr("cy", function(d) { return yScale( d.calories ); })  // y position
+              .style("fill", function(d, i) { return d3.schemeCategory10[i % 10]; })
+              .on("mouseover", tipMouseover)
+              .on("mouseout", tipMouseout);
+
+          var tooltip = d3.select("#vis-container")
+              .append("div")
+              .attr("class", "tooltip")
+              .style("opacity", 0);
+
+          function tipMouseover(d, i) {
+              var color = d3.schemeCategory10[i % 10];
+              var html  = d.cereal.replace("_", " ") + "<br/>" +
+                  "<span style='color:" + color + ";'>" + d.manufacturer + "</span><br/>" +
+                  "<b>" + d.sugar + "</b> sugar, <b/>" + d.calories + "</b> calories";
+
+              tooltip.html(html)
+                  .style("left", (d3.event.pageX + 15) + "px")
+                  .style("top", (d3.event.pageY - 28) + "px")
+                  .transition()
+                  .duration(200)
+                  .style("opacity", .9);
+          }
+
+          function tipMouseout(d) {
+              tooltip.transition()
+                  .duration(300)
+                  .style("opacity", 0);
+          }
+      };
+      </script>
+  </body>
+</html>
