@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>d3 Draggable Cirlces</title>
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <div id="d3Container"></div>
+    <script type="text/javascript">
+
+      var radius = 100;
+      var margin = { top: 20, right: 20, bottom: 40, left: 60 },
+          width = 640 - margin.left - margin.right,
+          height = 640/1.618 - margin.top - margin.bottom;
+
+      // Add the visualization svg canvas to the vis-container <div>
+      var svg = d3.select("#d3Container")
+          .append("svg")
+          .attr("width",  width  + margin.left + margin.right)
+          .attr("height", height + margin.top  + margin.bottom)
+          .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      const circles = [{x: width/3, y: height/2, label: "A"},
+                       {x: 2*width/3, y: height/2, label: "B"}];
+
+      var drag = d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended);
+
+      var node = svg.selectAll(".node")
+          .data(circles)
+          .enter()
+          .append("g")
+          .attr("class", "node")
+          .attr("transform", d => "translate(" + d.x + "," + height/2 + ")")
+          .call(drag);
+
+      node.append("circle")
+        .attr("r", radius)
+        .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
+        .attr("fill-opacity", 0.75);
+
+      node.append("text")
+        .attr("fill", "white")
+        .attr("text-anchor", "middle")
+        .text((d, i) => d.label);
+
+      function dragstarted(d) {
+          d3.select(this).raise().attr("stroke", "black");
+      }
+
+      function dragged(d) {
+          d.x += d3.event.dx
+          d3.select(this).attr("transform", "translate(" + d.x + "," + height/2 + ")")
+      }
+
+      function dragended(d) {
+          d3.select(this).attr("stroke", null);
+      }
+    </script>
+  </body>
+</html>
