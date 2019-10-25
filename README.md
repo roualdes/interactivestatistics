@@ -1,12 +1,12 @@
 # interactivestatistics
-A collection of interactive statistics tutorials.
+A collection of interactive statistics visualizations.
 
-You can view these by starting a simple local server and then pulling
-up the appropriate URL.  For instance, with Python3 you could start a local server with
+The following visualizations will work simply by obtaining the HTML
+file and opening in a modern browser.
 
-```python
-python -m http.serverf
-```
+- conditional_probability.html
+- point_tooltip.html
 
-and then load in your browser the page
-`http://0.0.0.0:8000/conditional_probability.html`.
+All other visualizations (if any) are developed on a locally hosted
+server and probably won't work by just opening the HTML file in a
+browser.
