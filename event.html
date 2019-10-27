@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>d3 Draggable Cirlces</title>
+    <!-- local development -->
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+  </head>
+  <body>
+    <h1>Event</h1>
+    <p>Resize event A to see how probability of an event corresponds to the relative size of the set within the sample space.</p>
+    <div id="d3Container"></div>
+    <p>
+      <label for="radius"
+             style="width: 240px">
+        radius = <span id="r"></span>
+      </label>
+      <input type="number" min="0" max="160" step="1" value="125" id="radius">
+    </p>
+    <div id="d3Display"></div>
+    <script type="text/javascript">
+      function probability() {
+          let svgWidth = 640;
+          let svgHeight = svgWidth / 1.618,
+              radius = 125;
+
+          let margin = { top: 20, right: 20, bottom: 40, left: 60 },
+              width = svgWidth - margin.left - margin.right,
+              height = svgHeight - margin.top - margin.bottom;
+
+          let svg = d3.select("#d3Container")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+              svg.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", height)
+              .attr("width", width)
+              .attr("stroke", "black")
+              .attr("rx", 15)
+              .attr("ry", 15)
+              .attr("fill", "none")
+              .attr("fill-opacity", "0");
+
+          const circles = [{x: width/2, y: height/2,
+                            id: "A", label: "A", radius: radius}];
+
+          let drag = d3.drag()
+              .on("start", dragstarted)
+              .on("drag", dragged)
+              .on("end", dragended);
+
+          let node = svg.selectAll(".node")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+              .attr("transform", d => "translate(" + d.x + "," + height/2 + ")")
+              .call(drag);
+
+          node.append("circle")
+              .attr("class", "circle")
+              .attr("r", d => d.radius)
+              .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
+              .attr("fill-opacity", 0.75);
+
+          node.append("text")
+              .attr("class", "text")
+              .attr("dy", "0.3em")
+              .attr("fill", "white")
+              .attr("text-anchor", "middle")
+              .text(d =>  d.label);
+
+          function dragstarted(d) {
+              d3.select(this).raise().attr("stroke", "black");
+          }
+
+          function dragged(d) {
+              d.x += d3.event.dx;
+              d.y += d3.event.dy;
+              let r = +d3.select("circle.circle").attr("r");
+              [d.x, d.y] = checkBounds(d, r);
+
+              d3.select(this)
+                  .attr("transform", "translate(" + d.x + "," + d.y + ")");
+
+              updateDisplay(d);
+          }
+
+          function checkBounds(d, r) {
+              if (d.x - r < 0) {
+                  d.x = r;
+              }
+              if (d.x + r > width) {
+                  d.x = width - r;
+              }
+              if (d.y - r < 0) {
+                  d.y = r;
+              }
+              if (d.y + r > height) {
+                  d.y = height - r;
+              }
+              return [d.x, d.y];
+          }
+
+          function dragended(d) {
+              d3.select(this).attr("stroke", null);
+          }
+
+          d3.select("#radius").on("input", function() {
+              let r = +this.value,
+                  transform = d3.select("g.circle").attr("transform");
+              let [cx, cy] = transform.split(",");
+              d = {x: +cx.slice(10), y: +cy.slice(0, -1)};
+              [d.x, d.y] = checkBounds(d, r);
+
+              d3.select("g.circle")
+                  .attr("transform", "translate(" + d.x + "," + d.y + ")");
+              updateRadius(r);
+          });
+
+          var disp = d3.select("#d3Display")
+              .append("div")
+              .attr("width",  width  + margin.left + margin.right)
+              .attr("height", height + margin.top  + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          updateRadius(radius);
+
+          function updateRadius(r) {
+              d3.select("circle.circle")
+                  .attr("r", r);
+
+              circles[0].radius = r;
+              updateDisplay(circles[0]);
+          }
+
+          let row = disp.append("div")
+              .attr("class", "probabilities");
+
+          var probA = "P(A)";
+
+          row.append("div")
+              .append("p")
+              .attr("id", "probabilityA")
+              .text(probA);
+
+          var support = svgWidth * svgHeight;
+
+          updateDisplay(circles[0]);
+
+          function updateDisplay(A){
+              disp.selectAll("#probabilityAValue").remove();
+
+              let pA = area(A) / support;
+
+              disp.selectAll("#probabilityA")
+                  .append("text")
+                  .attr("id", "probabilityAValue")
+                  .text(" = " + Math.round(pA * 100) / 100);
+          }
+
+          function area(C) {
+              return Math.PI * C.radius * C.radius;
+         }
+      }
+
+      probability();
+    </script>
+  </body>
+</html>
