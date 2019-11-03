@@ -2,15 +2,16 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>d3 Draggable Cirlces</title>
-    <!-- local development -->
-    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
-    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+    <title>Event</title>
+    <!-- <script type="text/javascript" src="d3.min.js" charset="utf-8"></script> -->
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</script>
   </head>
   <body>
     <h1>Event</h1>
-    <p>Resize event A to see how probability of an event corresponds to the relative size of the set within the sample space.</p>
-    <div id="d3Container"></div>
+    <p>Change the radius of \( A \) to see how the probability \( \mathbb{P}_{f}[A] \) corresponds to the relative size of the event \( A \) within the sample space \( \mathcal{X} \).</p>
     <p>
       <label for="radius"
              style="width: 240px">
@@ -18,7 +19,8 @@
       </label>
       <input type="number" min="0" max="160" step="1" value="125" id="radius">
     </p>
-    <div id="d3Display"></div>
+    <div id="sampleSpace"></div>
+    <div id="measureP"></div>
     <script type="text/javascript">
       function probability() {
           let svgWidth = 640;
@@ -29,14 +31,14 @@
               width = svgWidth - margin.left - margin.right,
               height = svgHeight - margin.top - margin.bottom;
 
-          let svg = d3.select("#d3Container")
+          let svg = d3.select("#sampleSpace")
               .append("svg")
               .attr("width",  svgWidth)
               .attr("height", svgHeight)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-              svg.append("rect")
+          svg.append("rect")
               .attr("x", 0)
               .attr("y", 0)
               .attr("height", height)
@@ -48,32 +50,33 @@
               .attr("fill-opacity", "0");
 
           const circles = [{x: width/2, y: height/2,
-                            id: "A", label: "A", radius: radius}];
+                            id: "A", label: "\\( A \\)", radius: radius}];
 
           let drag = d3.drag()
               .on("start", dragstarted)
               .on("drag", dragged)
               .on("end", dragended);
 
-          let node = svg.selectAll(".node")
+          let events = svg.selectAll("events")
               .data(circles)
               .join("g")
               .attr("class", "circle")
               .attr("transform", d => "translate(" + d.x + "," + height/2 + ")")
               .call(drag);
 
-          node.append("circle")
+          events.append("circle")
               .attr("class", "circle")
               .attr("r", d => d.radius)
               .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
               .attr("fill-opacity", 0.75);
 
-          node.append("text")
-              .attr("class", "text")
-              .attr("dy", "0.3em")
-              .attr("fill", "white")
-              .attr("text-anchor", "middle")
-              .text(d =>  d.label);
+          events.append("foreignObject")
+              .attr("x", -5)
+              .attr("y", -15)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:text')
+              .text(d => d.label);
 
           function dragstarted(d) {
               d3.select(this).raise().attr("stroke", "black");
@@ -87,8 +90,6 @@
 
               d3.select(this)
                   .attr("transform", "translate(" + d.x + "," + d.y + ")");
-
-              updateDisplay(d);
           }
 
           function checkBounds(d, r) {
@@ -123,12 +124,61 @@
               updateRadius(r);
           });
 
-          var disp = d3.select("#d3Display")
-              .append("div")
-              .attr("width",  width  + margin.left + margin.right)
-              .attr("height", height + margin.top  + margin.bottom)
+          var P = d3.select("#measureP")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight / 3)
               .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + margin.left + "," + margin.top * 3 + ")");
+
+          var x = d3.scaleLinear()
+              .domain([0, 1])
+              .range([0, width]);
+
+          var support = svgWidth * svgHeight;
+          let pA = area(circles[0]) / support;
+
+          P.append("g")
+              .call(d3.axisBottom(x));
+
+          P.append("line")
+              .attr("class", "mP")
+              .style("stroke", "steelblue")
+              .style("stroke-width", 5)
+              .attr("x1", 0)
+              .attr("y1", -10)
+              .attr("y2", -10)
+              .attr("x2", x(pA));
+
+          P.append("foreignObject")
+              .attr("x", -50)
+              .attr("y", -60)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ A ] \\)");
+
+          P.append("text")
+              .attr("class", "mPtext")
+              .attr("x", x(pA) + 0.1)
+              .attr("y", -20)
+              .text(Math.round((pA * 100)) / 100);
+
+          P.append("foreignObject")
+              .attr("x", -20)
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ \\emptyset ] \\)");
+
+          P.append("foreignObject")
+              .attr("x", x(.95))
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ \\mathcal{X} ] \\)");
 
           updateRadius(radius);
 
@@ -137,32 +187,14 @@
                   .attr("r", r);
 
               circles[0].radius = r;
-              updateDisplay(circles[0]);
-          }
+              let pA = area(circles[0]) / support;
 
-          let row = disp.append("div")
-              .attr("class", "probabilities");
+              d3.select("line.mP")
+                  .attr("x2", x(pA));
 
-          var probA = "P(A)";
-
-          row.append("div")
-              .append("p")
-              .attr("id", "probabilityA")
-              .text(probA);
-
-          var support = svgWidth * svgHeight;
-
-          updateDisplay(circles[0]);
-
-          function updateDisplay(A){
-              disp.selectAll("#probabilityAValue").remove();
-
-              let pA = area(A) / support;
-
-              disp.selectAll("#probabilityA")
-                  .append("text")
-                  .attr("id", "probabilityAValue")
-                  .text(" = " + Math.round(pA * 100) / 100);
+              d3.select("text.mPtext")
+                  .attr("x", x(pA) - 20)
+                  .text(Math.round((pA * 100)) / 100);
           }
 
           function area(C) {
