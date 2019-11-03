@@ -2,17 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>d3 Draggable Cirlces</title>
-    <!-- local development -->
+    <title>Conditional Probability</title>
     <!-- <script type="text/javascript" src="d3.min.js" charset="utf-8"></script> -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
     <h1>Conditional Probability</h1>
-    <p>Drag events A or B side to side to see how conditional
-    probabilities change dependent on their intersection.</p>
-    <div id="d3Container"></div>
-    <div id="d3Display"></div>
+    <p>Drag events \( A \) or \( B \) around to see how the conditional
+    probability \( \mathbb{P}_{f}[A | B] \) changes dependent on the intersection of \( A \) and \( B \), \( A \cap B \).</p>
+    <div id="sampleSpace"></div>
+    <div id="measurePAandB"></div>
+    <div id="measurePAcondB"></div>
     <script type="text/javascript">
       function conditionalProbability() {
           let svgWidth = 640;
@@ -23,7 +25,7 @@
               width = svgWidth - margin.left - margin.right,
               height = svgHeight - margin.top - margin.bottom;
 
-          let svg = d3.select("#d3Container")
+          let svg = d3.select("#sampleSpace")
               .append("svg")
               .attr("width",  svgWidth)
               .attr("height", svgHeight)
@@ -42,34 +44,35 @@
               .attr("fill-opacity", "0");
 
           const circles = [{x: width/4, y: height/2,
-                            id: "A", label: "A", radius: radius},
+                            id: "A", label: "\\( A \\)", radius: radius},
                            {x: width/4 + 1.25*radius, y: height/2,
-                            id: "B", label: "B", radius: radius}];
+                            id: "B", label: "\\( B \\)", radius: radius}];
 
           let drag = d3.drag()
               .on("start", dragstarted)
               .on("drag", dragged)
               .on("end", dragended);
 
-          let node = svg.selectAll(".node")
+          let events = svg.selectAll("events")
               .data(circles)
               .join("g")
               .attr("class", "circle")
               .attr("transform", d => "translate(" + d.x + "," + height/2 + ")")
               .call(drag);
 
-          node.append("circle")
+          events.append("circle")
               .attr("class", "circle")
               .attr("r", d => d.radius)
               .attr("fill", (d, i) => d3.schemeCategory10[i % 10])
               .attr("fill-opacity", 0.75);
 
-          node.append("text")
-              .attr("class", "text display-4")
-              .attr("dy", "0.3em")
-              .attr("fill", "white")
-              .attr("text-anchor", "middle")
-              .text(d =>  d.label);
+          events.append("foreignObject")
+              .attr("x", -5)
+              .attr("y", -15)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:text')
+              .text(d => d.label);
 
           function dragstarted(d) {
               d3.select(this).raise().attr("stroke", "black");
@@ -77,14 +80,12 @@
 
           function dragged(d) {
               d.x += d3.event.dx;
-              if (d.x - radius < 0) {
-                  d.x = radius;
-              }
-              if (d.x + radius > width) {
-                  d.x = width - radius;
-              }
+              d.y += d3.event.dy;
+              let r = +d3.select("circle.circle").attr("r");
+              [d.x, d.y] = checkBounds(d, r);
+
               d3.select(this)
-                  .attr("transform", "translate(" + d.x + "," + height/2 + ")");
+                  .attr("transform", "translate(" + d.x + "," + d.y + ")");
 
               if (d.id === "A") {
                   updateDisplay(d, circles[1]);
@@ -93,55 +94,153 @@
               }
           }
 
+          function checkBounds(d, r) {
+              if (d.x - r < 0) {
+                  d.x = r;
+              }
+              if (d.x + r > width) {
+                  d.x = width - r;
+              }
+              if (d.y - r < 0) {
+                  d.y = r;
+              }
+              if (d.y + r > height) {
+                  d.y = height - r;
+              }
+              return [d.x, d.y];
+          }
+
           function dragended(d) {
               d3.select(this).attr("stroke", null);
           }
 
-          var disp = d3.select("#d3Display")
-              .append("div")
-              .attr("width",  width  + margin.left + margin.right)
-              .attr("height", height + margin.top  + margin.bottom)
+          var PAandB = d3.select("#measurePAandB")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight / 3)
               .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+              .attr("transform", "translate(" + margin.left + "," + margin.top * 3 + ")");
 
-          let row = disp.append("div")
-              .attr("class", "probabilities");
+          var x = d3.scaleLinear()
+              .domain([0, 1])
+              .range([0, width]);
 
-          var intersectionAB = "P(A & B)",
-              conditionalAB = "P(A | B) = P(A & B) / P(B)";
+          var support = svgWidth * svgHeight;
+          let areaB = area(circles[1]);
+          let pAandB = intersection(circles[0], circles[1]) / areaB;
 
-          row.append("div")
-              .append("p")
-              .attr("id", "intersection")
-              .text(intersectionAB);
+          PAandB.append("g")
+              .call(d3.axisBottom(x));
 
-          row.append("div")
-              .append("p")
-              .attr("id", "conditional")
-              .text(conditionalAB);
+          PAandB.append("line")
+              .attr("class", "mPAandB")
+              .style("stroke", "steelblue")
+              .style("stroke-width", 5)
+              .attr("x1", 0)
+              .attr("y1", -10)
+              .attr("y2", -10)
+              .attr("x2", x(pAandB));
 
-          var support = svgWidth * svgHeight,
-              areaB = area(circles[1]);
+          PAandB.append("foreignObject")
+              .attr("x", -50)
+              .attr("y", -60)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ A \\cap B  ] \\)");
+
+          PAandB.append("text")
+              .attr("class", "mPAandBtext")
+              .attr("x", x(pAandB) + 0.1)
+              .attr("y", -20)
+              .text(Math.round((pAandB * 100)) / 100);
+
+          PAandB.append("foreignObject")
+              .attr("x", -20)
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ \\emptyset ] \\)");
+
+          PAandB.append("foreignObject")
+              .attr("x", x(.95))
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ \\mathcal{X} ] \\)");
+
+          var PAcondB = d3.select("#measurePAandB")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight / 3)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top * 3 + ")");
+
+
+          PAcondB.append("g")
+              .call(d3.axisBottom(x));
+
+          PAcondB.append("line")
+              .attr("class", "mPAcondB")
+              .style("stroke", "steelblue")
+              .style("stroke-width", 5)
+              .attr("x1", 0)
+              .attr("y1", -10)
+              .attr("y2", -10)
+              .attr("x2", x(pAandB));
+
+          PAcondB.append("foreignObject")
+              .attr("x", -50)
+              .attr("y", -60)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ A | B  ] \\)");
+
+          PAcondB.append("text")
+              .attr("class", "mPAcondBtext")
+              .attr("x", x(pAandB) + 0.1)
+              .attr("y", -20)
+              .text(Math.round((pAandB * 100)) / 100);
+
+          PAcondB.append("foreignObject")
+              .attr("x", -20)
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ \\emptyset ] \\)");
+
+          PAcondB.append("foreignObject")
+              .attr("x", x(.95))
+              .attr("y", 20)
+              .attr("width", 50)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\mathbb{P}_{f}[ B ] \\)");
 
           updateDisplay(circles[0], circles[1]);
 
           function updateDisplay(A, B){
-              disp.selectAll("#intersectionValue").remove();
-              disp.selectAll("#conditionalValue").remove();
-
               let AintB = intersection(A, B);
               let AandB = AintB / support,
                   AcondB = AintB / areaB;
 
-              disp.selectAll("#intersection")
-                  .append("text")
-                  .attr("id", "intersectionValue")
-                  .text(" = " + Math.round(AandB * 100) / 100);
+              d3.select("line.mPAandB")
+                  .attr("x2", x(AandB));
 
-              disp.selectAll("#conditional")
-                  .append("text")
-                  .attr("id", "conditionalValue")
-                  .text(" = " + Math.round(AcondB * 100) / 100);
+              d3.select("line.mPAcondB")
+                  .attr("x2", x(AcondB));
+
+              d3.select("text.mPAandBtext")
+                  .attr("x", x(AandB) - 20)
+                  .text(Math.round((AandB * 100)) / 100);
+
+              d3.select("text.mPAcondBtext")
+                  .attr("x", x(AcondB) - 20)
+                  .text(Math.round((AcondB * 100)) / 100);
           }
 
           function area(C) {
