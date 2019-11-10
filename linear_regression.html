@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Linear Regression</title>
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+    <script type="text/javascript" src="jstat.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
+  </head>
+  <body>
+    <div id="lm"></div>
+    <script type="text/javascript">
+
+      function welford(x) {
+          let m = 0,
+              M = 0,
+              N = x.length;
+          for (let n = 0; n < N; ++n) {
+              d = x[n] - m;
+              m += d / (n + 1);
+              M += d * (x[n] - m);
+          }
+          return [m, M/(N - 1)];
+      }
+
+      function linearRegression() {
+
+          let svgWidth = 640;
+          let svgHeight = svgWidth / 1.618;
+
+          let margin = { top: 20, right: 20, bottom: 40, left: 60 },
+              width = svgWidth - margin.left - margin.right,
+              height = svgHeight - margin.top - margin.bottom;
+
+          let svg = d3.select("#lm")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform",
+                    `translate( ${margin.left}, ${margin.top})`);
+
+          svg.append("rect")
+              .attr("fill", "none")
+              .attr("pointer-events", "all")
+              .attr("width", width)
+              .attr("height", height)
+              .attr("transform",
+                    `translate( ${margin.left}, ${margin.top})`);
+
+          var points = d3.range(1, 10).map(function(i) {
+              let x = Math.random()*width + 1;
+              return {
+                  x: x,
+                  y: 300 - 0.5*x + 20*jStat.randn(),
+                  id: i
+              };
+          });
+          points.sort(p => p.x);
+
+          let X = points.map(p => p.x),
+              Y = points.map(p => p.y);
+
+          let [b0, b1] = calculateBeta(X, Y);
+
+          let line = d3.line()
+              .x(d => d.x)
+              .y(d => b0 + b1 * d.x);
+
+          svg.append("path")
+              .datum([{x: 0}, {x: 550}])
+              .attr("fill", "none")
+              .attr("stroke", "steelblue")
+              .attr("stroke-width", 1.5)
+              .attr("d", line);
+
+          let drag = d3.drag()
+              .on("start", dragstarted)
+              .on("drag", dragged)
+              .on("end", dragended);
+
+          let circles = svg.selectAll("circles")
+              .data(points)
+              .join("g")
+              .attr("class", "circle")
+              .attr("transform", d => `translate( ${d.x}, ${d.y} )`)
+              .call(drag);
+
+          circles.append("circle")
+              .attr("class", "circle")
+              .attr("r", 5)
+              .attr("fill", "steelblue");
+
+          let x = d3.scaleLinear()
+              .range([0, width]);
+
+          let y = d3.scaleLinear()
+              .range([height, 0]);
+
+          let xAxis = d3.axisBottom(x),
+              yAxis = d3.axisLeft(y);
+
+          svg.append("g")
+              .attr("class", "x-axis")
+              .attr("transform",
+                    `translate(0, ${height} )`)
+              .call(xAxis);
+
+          svg.append("g")
+              .attr("class", "y-axis")
+              .call(yAxis);
+
+          function calculateBeta(x, y) {
+              let [mX, vX] = welford(x),
+                  mY = jStat.mean(y),
+                  covXY = jStat.covariance(x, y),
+                  b1 = covXY / vX,
+                  b0 = mY - b1 * mX;
+              return [b0, b1];
+          }
+
+          function dragstarted(d) {
+              d3.select(this).raise().classed('active', true);
+          }
+
+          function dragged(d) {
+              d.x += d3.event.dx;
+              d.y += d3.event.dy;
+              d3.select(this)
+                  .attr("transform",
+                        `translate( ${d.x}, ${d.y} )`);
+
+              let X = points.map((p, i) => i === d.id ? d.x : p.x),
+                  Y = points.map((p, i) => i === d.id ? d.y : p.y);
+
+              let [b0, b1] = calculateBeta(X, Y);
+
+              let line = d3.line()
+                  .x(d => d.x)
+                  .y(d => b0 + b1 * d.x);
+
+              svg.select("path")
+                  .attr("d", line);
+          }
+
+          function dragended(d) {
+              d3.select(this).classed('active', false);
+          }
+      }
+
+      linearRegression();
+    </script>
+  </body>
+</html>
