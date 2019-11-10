@@ -7,11 +7,16 @@
     <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
     <script type="text/javascript" src="jstat.min.js"></script>
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   </head>
   <body>
+    <p>Drag observations around to see how the estimates \( \hat{\beta}_0 \)
+    and \( \hat{\beta}_1 \) in the linear regression model \( y_n \sim \mathcal{N}(\beta_0 +
+    \beta_1 * x_n, \sigma^2) \) change dependent on the distance between the
+    points.</p>
     <div id="lm"></div>
     <script type="text/javascript">
-
       function welford(x) {
           let m = 0,
               M = 0,
@@ -98,8 +103,8 @@
           let y = d3.scaleLinear()
               .range([height, 0]);
 
-          let xAxis = d3.axisBottom(x),
-              yAxis = d3.axisLeft(y);
+          let xAxis = d3.axisBottom(x).tickFormat(""),
+              yAxis = d3.axisLeft(y).tickFormat("");
 
           svg.append("g")
               .attr("class", "x-axis")
@@ -107,9 +112,25 @@
                     `translate(0, ${height} )`)
               .call(xAxis);
 
+          svg.append("foreignObject")
+              .attr("x", 550)
+              .attr("y", 350)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( x \\)");
+
           svg.append("g")
               .attr("class", "y-axis")
               .call(yAxis);
+
+          svg.append("foreignObject")
+              .attr("x", -30)
+              .attr("y", -10)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( y \\)");
 
           function calculateBeta(x, y) {
               let [mX, vX] = welford(x),
