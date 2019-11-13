@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Probability Distributions</title>
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+    <script type="text/javascript" src="jstat.min.js"></script>
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> -->
+    <!-- <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+  </head>
+  <body>
+    <p>Moar wordz.</p>
+    <div id="dropdown"></div>
+    <div id="distributions"></div>
+    <script type="text/javascript">
+      function Distributions() {
+
+          let svgWidth = 640;
+          let svgHeight = svgWidth / 1.618;
+
+          let margin = { top: 20, right: 20, bottom: 40, left: 60 },
+              width = svgWidth - margin.left - margin.right,
+              height = svgHeight - margin.top - margin.bottom;
+
+          let svg = d3.select("#distributions")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform",
+                    `translate( ${margin.left}, ${margin.top})`);
+
+          var distributions = {
+              beta: {
+                  support: [1e-5, 1 - 1e-5],
+                  rv: jStat.beta
+              },
+              chisquare: {
+                  support: [1e-5, Infinity],
+                  rv: jStat.chisquare
+              },
+              exponential: {
+                  support: [1e-5, Infinity],
+                  rv: jStat.exponential
+              },
+              gamma: {
+                  support: [1e-5, Infinity],
+                  rv: jStat.gamma
+              },
+              normal: {
+                  support: [-Infinity, Infinity],
+                  rv: jStat.normal
+              },
+              studentt: {
+                  support: [-Infinity, Infinity],
+                  rv: jStat.studentt
+              },
+              weibull: {
+                  support: [1e-5, Infinity],
+                  rv: jStat.weibull
+              }
+          };
+
+          // if Gaussian
+          let dist = distributions['beta'];
+          let RV = dist.rv(3, 10),
+              lb = Math.max(dist.support[0],
+                            RV.mean() - 4 * Math.sqrt(RV.variance())),
+              ub = Math.min(dist.support[1],
+                            RV.mean() + 4 * Math.sqrt(RV.variance()));
+
+          let X = jStat.arange(lb, ub, 0.01);
+          let data = [];
+          for (let n = 0; n < X.length; ++n) {
+              data.push({x: X[n],
+                         y: RV.pdf(X[n])});
+          };
+
+
+          var xScale = d3.scaleLinear()
+              .domain(d3.extent(data, d => d.x))
+              .range([0, width]);
+
+          var yScale = d3.scaleLinear()
+              .domain(d3.extent(data, d => d.y))
+              .range([height, 0]);
+
+          let line = d3.line()
+              .x(d => xScale(d.x))
+              .y(d => yScale(d.y));
+
+          svg.append("path")
+              .datum(data)
+              .attr("class", "density")
+              .attr("fill", "none")
+              .attr("stroke", "steelblue")
+              .attr("stroke-width", 2)
+              .attr("d", line);
+
+          let xAxis = d3.axisBottom(xScale),
+              yAxis = d3.axisLeft(yScale);
+
+          svg.append("g")
+              .attr("class", "x-axis")
+              .attr("transform",
+                    `translate(0, ${height} )`)
+              .call(xAxis);
+
+          svg.append("foreignObject")
+              .attr("x", width)
+              .attr("y", height + 10)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("x");
+
+          svg.append("g")
+              .attr("class", "y-axis")
+              .call(yAxis);
+
+          svg.append("foreignObject")
+              .attr("x", -50)
+              .attr("y", -10)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("y");
+
+          function updateDensity(data) {
+              d3.select("path.density")
+                  .datum(data)
+                  .attr("class", "density")
+                  .attr("fill", "none")
+                  .attr("stroke", "steelblue")
+                  .attr("stroke-width", 2)
+                  .attr("d", line);
+          }
+
+          function dropdownChange() {
+              let d = d3.select(this).property('value'),
+                  dist = distributions[d.toLowerCase()];
+              let RV = dist.rv(3, 10),
+                  lb = Math.max(dist.support[0],
+                                RV.mean() - 5 * Math.sqrt(RV.variance())),
+                  ub = Math.min(dist.support[1],
+                                RV.mean() + 5 * Math.sqrt(RV.variance()));
+
+              let X = jStat.arange(lb, ub, 0.01);
+              let data = [];
+              for (let n = 0; n < X.length; ++n) {
+                  data.push({x: X[n],
+                             y: RV.pdf(X[n])});
+              };
+
+              xScale.domain(d3.extent(data, d => d.x));
+              yScale.domain(d3.extent(data, d => d.y));
+
+              let xAxis = d3.axisBottom(xScale),
+                  yAxis = d3.axisLeft(yScale);
+
+              d3.select("g.x-axis").call(xAxis);
+              d3.select("g.y-axis").call(yAxis);
+
+              updateDensity(data);
+          };
+
+          let dropdown = d3.select("#dropdown")
+              .insert("select", "svg")
+              .on("change", dropdownChange);
+
+          dropdown.selectAll("ProbabilityDistribution")
+              .data(Object.keys(distributions))
+              .enter().append("option")
+              .attr("value", d => d)
+              .text(d => d[0].toUpperCase() + d.slice(1,d.length));
+
+          updateDensity(data);
+      }
+
+      Distributions();
+    </script>
+  </body>
+</html>
