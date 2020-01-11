@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Bernoulli Distribution</title>
+    <link rel="stylesheet" href="tufte.min.css"/>
+
+    <!-- local D3 -->
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- fetch D3 -->
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+
+    <!-- local KaTeX -->
+    <link defer rel="stylesheet" href="katex.min.css">
+    <script defer src="katex.min.js" charset="uft-8"></script>
+    <script defer src="auto-render.min.js" charset="utf-8" onload="renderMathInElement(document.body);"></script>
+    <!-- fetch KaTeX-->
+    <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous"> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <article>
+      <h1 id="page">Bernoulli Distribution</h1>
+      <p class="subtitle">Edward A. Roualdes</p>
+      <section>
+        <h2 id="contents">Contents</h2>
+        <bold><a href="#introduction">Introduction</a></bold></br>
+        <bold><a href="#density">Density Function</a></bold></br>
+      </section>
+
+      <section>
+        <h2 id="introduction">Introduction</h2>
+        <p>
+          The Bernoulli distribution is a simple and flexible
+          statistical model capturing any event that has only two
+          outcomes. In fact, the Bernoulli distribution is the basis
+          of some very sophisticaed binary classifiers in machine
+          learning.
+        </p>
+
+        <p>
+          There are two key features of the Bernoulli distribution.
+          This distribution can only take on two values, commonly
+          referred to as failure and success.  Failure gets recorded
+          as \(0\) and success as \(1\).  The probability of a success
+          has a constant probability \(p\).  Because there are only
+          two outcomes under this distribution, the probability of a
+          failure is \(1 - p\).
+        </p>
+
+        <p>
+          To model a real world process with the Bernoulli
+          distribution, the researcher is to identify a process that
+          has only two outcomes.  Label the outcome of interest,
+          success, and the other outcome as a failure.  If it's
+          reasonable to believe that the probability of success is
+          constant in time and/or space, then there's a reasonable
+          chance the Bernoulli distribution will be an appropriate
+          model.
+        </p>
+      </section>
+
+      <section>
+        <h2 id="density">Density Function</h2>
+        <p>
+          The Bernoulli distribution is one of the simpler
+          distribution functions because the variable \(x\) can only
+          take on two possible values \(0\) or
+          \(1\).  <span class="marginnote">We write this
+            mathematically as \(x \in \{0, 1\}\) and read this as \(x\)
+            is in the set that consists of \(0\) and \(1\).</span>
+
+          The Bernoulli distribution function is
+          \[ f(x) = p^x (1 - p)^{(1 - x)}. \]
+        </p>
+
+        <p>
+          Try on your own to evaluate the density function across both
+          values that \(x\) can take on.  Do you understand now why
+          the value \(1\) is associated with the probability \(p\)?
+        </p>
+
+        <p>
+          The display below depicts the Bernoulli density function in
+          a plot.  The probability of success \(p\) defaults to
+          \(0.6\).  Change the value of \(p\) to any number between
+          \(0\) and \(1\) and the plot will update automatically.
+        </p>
+
+        <p>
+          Below the plot you can simulate data from the specified Bernoulli
+          distribution.  \(101\) random observations will
+          appear when you click Sample.  The closer \(p\) is to \(1\),
+          the more \(1\)s will appear on the scale below.
+        </p>
+
+
+        <p>
+          <label for="probability" style="width: 240px">
+            \(p\) = <span id="p"></span>
+          </label>
+          <input type="number" min="0" max="1" step="0.05" value="0.6" id="probability">
+        </p>
+
+        <div id="sampleSpace"></div>
+        <p>Randomly sample 101 Bernoulli observations:
+          <button id="resample" type="button">Sample</button>
+        </p>
+        <div id="balance"></div>
+        <div id="measureP"></div>
+        <p>
+          The blue triangle indicates the value of the true population
+          parameter \(p\).  The pink triangle indicates the estimate
+          \(\hat{p}\) of \(p\).  The pink triangle identifies the the
+          value of the estimate \(\hat{p}\) for the randomly sampled
+          data, and hence indicates the fulcrum point of the scale.
+        </p>
+      </section>
+
+      <section>
+        <h2 id="estimation">Estimation</h2>
+        <p>
+          Estimating the population parameter \(p\) is as simple as
+          adding up all the Bernoulli observations and dividing by the
+          sample size.  That is, \( \hat{p} = \sum_{n = 1}^N x_n \).
+          This is exactly what the pink triangle in the interactive
+          display above is representing.
+        </p>
+      </section>
+    </article>
+    <script type="text/javascript">
+      function probability() {
+          var N = 101,
+              svgWidth = 500,
+              svgHeight = svgWidth / 1.618;
+
+          let margin = { top: 20, right: 20, bottom: 60, left: 80 },
+              width = svgWidth - margin.left - margin.right,
+              height = svgHeight - margin.top - margin.bottom;
+
+          let svg = d3.select("#sampleSpace")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          const data = [{x: 0, y: 0.4, label: "0"},
+                        {x: 1, y: 0.6, label: "1"}];
+
+          var x = d3.scaleBand()
+              .domain(data.map( d => d.label))
+              .range([0, width]);
+
+          var y = d3.scaleLinear()
+              .domain([0, 1])
+              .range([height, 0]);
+
+          svg.selectAll("#bernoulli")
+              .data(data).enter()
+              .append("circle")
+              .attr("class", "bernoulli")
+              .attr("cx", d => x(d.x) + x.bandwidth()/2)
+              .attr("r", 5.5)
+              .attr("cy", d => y(d.y))
+              .attr("fill", "#00BFFF");
+
+          d3.select("#probability")
+              .on("input", function() {
+                  let p = +this.value;
+
+                  updateProbability(p);
+
+                  d3.select(".bones").remove();
+                  d3.select(".bzeros").remove();
+                  d3.select(".phat").remove();
+              });
+
+          // add the x Axis
+          svg.append("g")
+              .attr("transform", `translate(0, ${height})`)
+              .call(d3.axisBottom(x));
+
+          svg.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", height + 30)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append("xhtml:div")
+              .text("\\( x \\)");
+
+          // add the y Axis
+          svg.append("g")
+              .call(d3.axisLeft(y));
+
+          svg.append("foreignObject")
+              .attr("x", -80)
+              .attr("y", height / 2)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append("xhtml:div")
+              .text("\\( f(x) \\)");
+
+          // Balance
+          var xs = d3.scaleLinear()
+              .domain([0, 1])
+              .range([0, width]);
+
+          var balance = d3.selectAll("#balance")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight / 5)
+              .append("g")
+              .attr("transform", `translate( ${margin.left}, ${margin.top * 3})`);
+
+          d3.select("#resample").on("click", function() {
+              d3.select(".bones").remove();
+              d3.select(".bzeros").remove();
+              d3.select(".phat").remove();
+              sampleBernoulli(balance, P, data[1].y);
+          });
+
+          balance.append("g")
+              .call(d3.axisBottom(xs).tickValues([]));
+
+          // Measure P
+          var P = d3.select("#measureP")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight / 5)
+              .append("g")
+              .attr("transform", `translate( ${margin.left}, ${margin.top * 1.25})`);
+
+          var xp = d3.scaleLinear()
+              .domain([0, 1])
+              .range([0, width]);
+
+          P.append("g")
+              .call(d3.axisBottom(xp));
+
+          P.append("path")
+              .attr("class", "p")
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(200))
+              .attr("fill", "#00BFFF")
+              .attr("transform", `translate(${xp(data[1].y)}, -10)`);
+
+          P.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", 30)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append("xhtml:div")
+              .text("\\( p \\)");
+
+          function updateProbability(p) {
+              data[0].y = 1.0 - p;
+              data[1].y = p;
+              d3.selectAll(".bernoulli")
+                  .attr("cy", d => y(d.y));
+
+              d3.select(".p")
+                  .attr("transform", `translate(${xp(p)}, -10)`);
+          }
+
+          function sampleBernoulli(balance, P, p) {
+              let zeros = [],
+                  ones = [];
+              var points = d3.range(N).forEach(function(d, i) {
+                  if (Math.random() < p) {
+                      ones.push({id: i});
+                  } else {
+                      zeros.push({id: i});
+                  }
+              });
+
+              var bOnes = balance.append("g")
+                  .attr("class", "bones")
+                  .selectAll("cirlce")
+                  .data(ones).enter()
+                  .append("circle")
+                  .attr("r", 2)
+                  .attr("fill", "#FF6DAE");
+
+              var simOnes = d3.forceSimulation()
+                  .force("center", d3.forceCenter().x( width - 15 ).y(-2.5))
+                  .force("charge", d3.forceManyBody().strength(0.1))
+                  .force("collide", d3.forceCollide().radius(2.5).iterations(1))
+                  .force("x", d3.forceX(0))
+                  .force("y", d3.forceY(0));
+
+              simOnes
+                  .nodes(ones)
+                  .on("tick", function(){
+                      bOnes
+                          .attr("cx", d => d.x)
+                          .attr("cy", d => d.y > -2.5 ? -2.5 : d.y);
+                  });
+
+              var bZeros = balance.append("g")
+                  .attr("class", "bzeros")
+                  .selectAll("cirlce")
+                  .data(zeros).enter()
+                  .append("circle")
+                  .attr("r", 2)
+                  .attr("fill", "#FF6DAE");
+
+              var simZeros = d3.forceSimulation()
+                  .force("center", d3.forceCenter().x( 15 ).y(-2.5))
+                  .force("charge", d3.forceManyBody().strength(0.1))
+                  .force("collide", d3.forceCollide().radius(2.5).iterations(1))
+                  .force("x", d3.forceX(0))
+                  .force("y", d3.forceY(0));
+
+              simZeros
+                  .nodes(zeros)
+                  .on("tick", function(){
+                      bZeros
+                          .attr("cx", d => d.x)
+                          .attr("cy", d => d.y > -2.5 ? -2.5 : d.y);
+                  });
+
+              P.append("path")
+                  .attr("class", "phat")
+                  .attr("d", d3.symbol().type(d3.symbolTriangle).size(200))
+                  .attr("fill", "#FF6DAE")
+                  .attr("transform", `translate(${xs(ones.length / N)}, -10)`);
+          }
+      }
+
+      probability();
+    </script>
+  </body>
+</html>
