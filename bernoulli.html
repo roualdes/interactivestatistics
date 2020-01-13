@@ -29,6 +29,7 @@
         <h2 id="contents">Contents</h2>
         <bold><a href="#introduction">Introduction</a></bold></br>
         <bold><a href="#density">Density Function</a></bold></br>
+        <bold><a href="#estimation">Estimation</a></bold></br>
       </section>
 
       <section>
@@ -67,13 +68,13 @@
         <h2 id="density">Density Function</h2>
         <p>
           The Bernoulli distribution is one of the simpler
-          distribution functions because the variable \(x\) can only
+          density functions because the variable \(x\) can only
           take on two possible values \(0\) or
           \(1\).  <span class="marginnote">We write this
             mathematically as \(x \in \{0, 1\}\) and read this as \(x\)
             is in the set that consists of \(0\) and \(1\).</span>
 
-          The Bernoulli distribution function is
+          The Bernoulli density function is
           \[ f(x) = p^x (1 - p)^{(1 - x)}. \]
         </p>
 
@@ -84,39 +85,43 @@
         </p>
 
         <p>
-          The display below depicts the Bernoulli density function in
-          a plot.  The probability of success \(p\) defaults to
-          \(0.6\).  Change the value of \(p\) to any number between
-          \(0\) and \(1\) and the plot will update automatically.
-        </p>
-
-        <p>
-          Below the plot you can simulate data from the specified Bernoulli
-          distribution.  \(101\) random observations will
-          appear when you click Sample.  The closer \(p\) is to \(1\),
-          the more \(1\)s will appear on the scale below.
-        </p>
-
-
-        <p>
-          <label for="probability" style="width: 240px">
-            \(p\) = <span id="p"></span>
-          </label>
-          <input type="number" min="0" max="1" step="0.05" value="0.6" id="probability">
+          The plot below is interactive.  Pick a value for the
+          population parameter \(p\)
+          = <span class="probabilityp"></span>. Observe how the plot
+          changes as you change \(p\).  Below the plot, you can
+          simulate data from the specified Bernoulli distribution.
+          \(N\), which defaults to \(101\), random observations will
+          appear when you click "sample".  The closer \(p\) is to
+          \(1\), the more \(1\)s will appear on the scale below.
         </p>
 
         <div id="sampleSpace"></div>
-        <p>Randomly sample 101 Bernoulli observations:
-          <button id="resample" type="button">Sample</button>
+        <p>Randomly <a id="resample">sample</a>
+          <span class="N"></span> Bernoulli observations.
+
         </p>
         <div id="balance"></div>
         <div id="measureP"></div>
         <p>
           The blue triangle indicates the value of the true population
-          parameter \(p\).  The pink triangle indicates the estimate
-          \(\hat{p}\) of \(p\).  The pink triangle identifies the the
-          value of the estimate \(\hat{p}\) for the randomly sampled
-          data, and hence indicates the fulcrum point of the scale.
+          parameter \(p\), and the point at which we expect the scale,
+          if you will, to balance when an infinite number of
+          observations pile up.  The pink triangle indicates the
+          estimate \(\hat{p}\) of \(p\).  The pink triangle identifies
+          the the value of the estimate \(\hat{p}\) for the randomly
+          sampled data, and hence indicates the fulcrum point of the
+          scale for the finite number of randomly sampled observations.
+        </p>
+
+        <p>
+          Repeatedly the sample above with varying sizes of \(N\).
+          Notice how for smaller values of \(N\), the estimated value
+          realized by the pink triangle is less often close to the
+          true population parameter, the blue triangle.  That is, with
+          a smaller sample size there is more error in estimation.
+          For larger \(N\), mathematical statistics dictates that an
+          estimate on average will be closer to the true population
+          mean.
         </p>
       </section>
 
@@ -124,16 +129,36 @@
         <h2 id="estimation">Estimation</h2>
         <p>
           Estimating the population parameter \(p\) is as simple as
-          adding up all the Bernoulli observations and dividing by the
-          sample size.  That is, \( \hat{p} = \sum_{n = 1}^N x_n \).
+          adding up all the values Bernoulli observations and dividing by the
+          sample size.  That is, \( \hat{p} = \frac{1}{N}\sum_{n = 1}^N x_n \).
           This is exactly what the pink triangle in the interactive
           display above is representing.
         </p>
+
+        <p>
+          The plot below is another way to visualize the fact that
+          larger sample sizes lead to greater precision is estimation.<span class="marginnote">If an estimator, with infinite data, exactly identifies the true population parameter of interest, then statisticians call this estimator <em>consistent</em>.</span>
+          As the sample sizes increase, along the x-axis, the sample
+          mean converges towards the true population mean.
+        </p>
+
+        <p>
+          <a id="reconvergence">Sample</a> from a Bernoulli
+          distribution with probability \(p\)
+          = <span class="probabilityp"></span>.
+        </p>
+
+        <div id="convergence"></div>
       </section>
+
+      <hr>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
     </article>
+
     <script type="text/javascript">
       function probability() {
           var N = 101,
+              p = 0.6,
               svgWidth = 500,
               svgHeight = svgWidth / 1.618;
 
@@ -148,8 +173,8 @@
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-          const data = [{x: 0, y: 0.4, label: "0"},
-                        {x: 1, y: 0.6, label: "1"}];
+          const data = [{x: 0, y: 1 - p, label: "0"},
+                        {x: 1, y: p, label: "1"}];
 
           var x = d3.scaleBand()
               .domain(data.map( d => d.label))
@@ -216,12 +241,14 @@
               .append("g")
               .attr("transform", `translate( ${margin.left}, ${margin.top * 3})`);
 
-          d3.select("#resample").on("click", function() {
-              d3.select(".bones").remove();
-              d3.select(".bzeros").remove();
-              d3.select(".phat").remove();
-              sampleBernoulli(balance, P, data[1].y);
-          });
+          d3.select("#resample")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .on("click", function() {
+                  d3.select(".bones").remove();
+                  d3.select(".bzeros").remove();
+                  d3.select(".phat").remove();
+                  sampleBernoulli(balance, P, data[1].y);
+              });
 
           balance.append("g")
               .call(d3.axisBottom(xs).tickValues([]));
@@ -242,7 +269,7 @@
               .call(d3.axisBottom(xp));
 
           P.append("path")
-              .attr("class", "p")
+              .attr("class", "mp")
               .attr("d", d3.symbol().type(d3.symbolTriangle).size(200))
               .attr("fill", "#00BFFF")
               .attr("transform", `translate(${xp(data[1].y)}, -10)`);
@@ -261,14 +288,51 @@
               d3.selectAll(".bernoulli")
                   .attr("cy", d => y(d.y));
 
-              d3.select(".p")
+              d3.select(".mp")
                   .attr("transform", `translate(${xp(p)}, -10)`);
+          }
+
+          d3.select(".N")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(N)
+              .call(d3.drag()
+                    .on("drag", adjustN));
+
+          function adjustN() {
+              N += d3.event.dx;
+              N = N < 1 ? 1 : N;
+              N = N > 151 ? 151 : N;
+
+              d3.select(".N")
+                  .text(N);
+          }
+
+          d3.selectAll(".probabilityp")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(p)
+              .call(d3.drag()
+                    .on("drag", adjustp));
+
+          function adjustp() {
+              p += d3.event.dx / 100;
+              p = p < 0 ? 0 : p;
+              p = p > 1 ? 1 : p;
+
+              updateProbability(p);
+              p = Math.round(p * 100) / 100;
+
+              d3.select(".convergenceLimit")
+                  .remove();
+              convergenceLimit(p);
+
+              d3.selectAll(".probabilityp")
+                  .text(p);
           }
 
           function sampleBernoulli(balance, P, p) {
               let zeros = [],
                   ones = [];
-              var points = d3.range(N).forEach(function(d, i) {
+              d3.range(N).forEach(function(d, i) {
                   if (Math.random() < p) {
                       ones.push({id: i});
                   } else {
@@ -285,7 +349,7 @@
                   .attr("fill", "#FF6DAE");
 
               var simOnes = d3.forceSimulation()
-                  .force("center", d3.forceCenter().x( width - 15 ).y(-2.5))
+                  .force("center", d3.forceCenter().x(width - 15).y(-2.5))
                   .force("charge", d3.forceManyBody().strength(0.1))
                   .force("collide", d3.forceCollide().radius(2.5).iterations(1))
                   .force("x", d3.forceX(0))
@@ -308,7 +372,7 @@
                   .attr("fill", "#FF6DAE");
 
               var simZeros = d3.forceSimulation()
-                  .force("center", d3.forceCenter().x( 15 ).y(-2.5))
+                  .force("center", d3.forceCenter().x(15).y(-2.5))
                   .force("charge", d3.forceManyBody().strength(0.1))
                   .force("collide", d3.forceCollide().radius(2.5).iterations(1))
                   .force("x", d3.forceX(0))
@@ -328,6 +392,101 @@
                   .attr("fill", "#FF6DAE")
                   .attr("transform", `translate(${xs(ones.length / N)}, -10)`);
           }
+
+          // convergence plot
+          let svgC = d3.select("#convergence")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          var M = 501;
+          let bernoullis = [],
+              t = 0;
+          d3.range(M).forEach((d, i) => {
+              let B = Math.random() < p ? 1 : 0;
+              t += B;
+              bernoullis.push({x: i+1, y: t / (i + 1)})
+          });
+
+          var xC = d3.scaleLinear()
+              .domain([0, M])
+              .range([0, width]);
+
+          var yC = d3.scaleLinear()
+              .domain([0, 1])
+              .range([height, 0]);
+
+          function convergenceLimit(p) {
+              svgC.selectAll("#bernoulliC")
+                  .data([[{x: 1, y: p},
+                          {x: M+5, y: p}]]).enter()
+                  .append("g")
+                  .append("path")
+                  .attr("class", "convergenceLimit")
+                  .attr("fill", "none")
+                  .attr("stroke", "#00BFFF")
+                  .attr("d", d3.line()
+                        .x(d => xC(d.x))
+                        .y(d => yC(d.y)));              
+          }
+          convergenceLimit(p);
+
+
+          function drawConvergence(p) {
+              let bernoullis = [],
+                  t = 0;
+              d3.range(M).forEach((d, i) => {
+                  let B = Math.random() < p ? 1 : 0;
+                  t += B;
+                  bernoullis.push({x: i+1, y: t / (i + 1), id: i})
+              });
+
+              svgC.selectAll("#bernoulliC")
+                  .data([bernoullis]).enter()
+                  .append("g")
+                  .append("path")
+                  .attr("class", "bernoulliC")
+                  .attr("fill", "none")
+                  .attr("stroke", "#FF6DAE")
+                  .attr("d", d3.line()
+                        .x(d => xC(d.x))
+                        .y(d => yC(d.y)));
+          }
+
+          d3.select("#reconvergence")
+          .attr("style", "border-bottom: 1px dotted #000;")
+              .on("click", function() {
+                  drawConvergence(data[1].y);
+              });
+
+          
+          // add the x Axis
+          svgC.append("g")
+              .attr("transform", `translate(0, ${height})`)
+              .call(d3.axisBottom(xC));
+
+          svgC.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", height + 30)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append("xhtml:div")
+              .text("\\( N \\)");
+
+          // add the y Axis
+          svgC.append("g")
+              .call(d3.axisLeft(yC));
+
+          svgC.append("foreignObject")
+              .attr("x", -80)
+              .attr("y", height / 2)
+              .attr("width", 100)
+              .attr("height", 50)
+              .append("xhtml:div")
+              .text("\\( \\textcolor{#FF6DAE}{\\hat{p}}, \\, \\textcolor{#00BFFF}{p} \\)");
+
       }
 
       probability();
