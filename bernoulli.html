@@ -55,8 +55,8 @@
         <p>
           To model a real world process with the Bernoulli
           distribution, the researcher is to identify a process that
-          has only two outcomes.  Label the outcome of interest,
-          success, and the other outcome as a failure.  If it's
+          has only two outcomes.  Label the outcome of interest a
+          success and the other outcome a failure.  If it's
           reasonable to believe that the probability of success is
           constant in time and/or space, then there's a reasonable
           chance the Bernoulli distribution will be an appropriate
@@ -67,12 +67,15 @@
       <section>
         <h2 id="density">Density Function</h2>
         <p>
-          The Bernoulli distribution is one of the simpler
-          density functions because the variable \(x\) can only
-          take on two possible values \(0\) or
-          \(1\).  <span class="marginnote">We write this
-            mathematically as \(x \in \{0, 1\}\) and read this as \(x\)
-            is in the set that consists of \(0\) and \(1\).</span>
+          The Bernoulli distribution is one of the simpler density
+          functions because the variable \(x\) can only take on two
+          possible values<label for="sn-in" class="margin-toggle
+          sidenote-number"></label></span><input type="checkbox"
+          id="sn-in"
+          class="margin-toggle"/><span class="marginnote">We write
+          this mathematically as \(x \in \{0, 1\}\) and read this as
+          \(x\) is an element of the set that consists of \(0\) and \(1\).</span>
+          \(0\) or \(1\).
 
           The Bernoulli density function is
           \[ f(x) = p^x (1 - p)^{(1 - x)}. \]
@@ -114,7 +117,7 @@
         </p>
 
         <p>
-          Repeatedly the sample above with varying sizes of \(N\).
+          Repeatedly sample above with varying sample sizes \(N\).
           Notice how for smaller values of \(N\), the estimated value
           realized by the pink triangle is less often close to the
           true population parameter, the blue triangle.  That is, with
@@ -129,17 +132,23 @@
         <h2 id="estimation">Estimation</h2>
         <p>
           Estimating the population parameter \(p\) is as simple as
-          adding up all the values Bernoulli observations and dividing by the
-          sample size.  That is, \( \hat{p} = \frac{1}{N}\sum_{n = 1}^N x_n \).
-          This is exactly what the pink triangle in the interactive
-          display above is representing.
+          adding up all the values Bernoulli observations and dividing
+          by the sample size.  That is, calculate the sample
+          mean<label for="sn-phat" class="margin-toggle
+          sidenote-number"></label></span><input type="checkbox"
+          id="sn-phat"
+          class="margin-toggle"/><span class="sidenote">We read \(
+          \hat{p} \) as p hat.</span> \( \hat{p} = \frac{1}{N}\sum_{n
+          = 1}^N x_n \).  This is exactly what the pink triangle is
+          representing above, in the interactive display.
         </p>
 
         <p>
-          The plot below is another way to visualize the fact that
-          larger sample sizes lead to greater precision is estimation.<span class="marginnote">If an estimator, with infinite data, exactly identifies the true population parameter of interest, then statisticians call this estimator <em>consistent</em>.</span>
-          As the sample sizes increase, along the x-axis, the sample
-          mean converges towards the true population mean.
+          The plot below attempts to display the fact that larger
+          sample sizes lead to greater precision is estimation. If an
+          estimator, with infinite data, exactly identifies the true
+          population parameter of interest, then statisticians call
+          this estimator <em>consistent</em>.
         </p>
 
         <p>
@@ -149,6 +158,25 @@
         </p>
 
         <div id="convergence"></div>
+
+        <p>
+          Consider one displayed<label for="sn-displayed-convergence"
+        class="margin-toggle
+        sidenote-number"></label></span><input type="checkbox"
+        id="sn-displayed-convergence"
+        class="margin-toggle"/><span class="sidenote">If you haven't
+        yet clicked "sample" just above this plot, please do so at
+        least once.</span>
+        line <span id="convergenceSparkLine"></span>.  Along the
+        x-axis is the size of a random sample of Bernoulli
+        observations.  On the y-axis is the sample mean corresponding
+        to the sample size on the x-axis.  Upon each observation,
+        calculate the sum of the observations and divide by the sample
+        size.  Each displayed line is then a cumulative mean for a
+        sample of 500 observations.  As the sample sizes increase,
+        along the x-axis, the sample mean converges towards the true
+        population mean.
+        </p>
       </section>
 
       <hr>
@@ -486,6 +514,29 @@
               .attr("height", 50)
               .append("xhtml:div")
               .text("\\( \\textcolor{#FF6DAE}{\\hat{p}}, \\, \\textcolor{#00BFFF}{p} \\)");
+
+          var widthSL = 50,
+              heightSL = 20;
+          var xSL = d3.scaleLinear()
+              .domain([0, M])
+              .range([0, widthSL]);
+
+          var ySL = d3.scaleLinear()
+              .domain([0.4, 0.8])
+              .range([heightSL, 0]);
+
+          d3.select("#convergenceSparkLine")
+              .append("svg")
+              .attr("width", widthSL)
+              .attr("height", heightSL)
+              .append("path")
+              .datum(bernoullis)
+              .attr("class", "sparkline")
+              .attr("fill", "none")
+              .attr("stroke", "#FF6DAE")
+              .attr('d', d3.line()
+                    .x(d => xSL(d.x))
+                    .y(d => ySL(d.y)));
 
       }
 
