@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Basic Set Theory</title>
+    <link rel="stylesheet" href="tufte.min.css"/>
+    <style>
+      .katex { font-size: 0.95em !important; }
+      foreignObject { font-size: 2em; }
+    </style>
+    <!-- local D3 -->
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- fetch D3 -->
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+
+    <!-- local KaTeX -->
+    <link defer rel="stylesheet" href="katex.min.css">
+    <script defer src="katex.min.js" charset="uft-8"></script>
+    <script defer src="auto-render.min.js" charset="utf-8" onload="renderMathInElement(document.body);"></script>
+    <!-- fetch KaTeX-->
+    <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous"> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
+
+    <script type="text/javascript" src="jstat.min.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <article>
+      <h1 id="page">Basic Set Theory</h1>
+      <p class="subtitle">Edward A. Roualdes</p>
+      <section>
+        <h2 id="contents">Contents</h2>
+        <bold><a href="#introduction">Introduction</a></bold></br>
+        <bold><a href="#sets">Sets</a></bold></br>
+        <bold><a href="#setoperations">Set Operations</a></bold></br>
+      </section>
+
+      <section>
+        <h2 id="introduction">Introduction</h2>
+        <p>
+          Set theory is the starting point for a wide range of topics.
+          At its most basic level, sets just describes groups of
+          things and the theory describes how to logically rearrange
+          sets into new sets.  The things are most often numbers, but
+          since we are headed towards an introduction to probability,
+          our sets don't necessarily have to consist of numbers. As
+          such, these notes comprise a collection of material that one
+          should know to understand a short introduction to
+          probability.  These notes are not intended to
+          be a comprehensive review of set theory in general.
+        </p>
+
+        <p>
+
+          Two sections follow, Sets and Set Operations.  The section
+          Sets describes the basic components of sets and introduces
+          new notation to describe elements of sets.  The section Set
+          Operations mostly consists of binary operations on sets.
+          From these binary operations, new sets can be constructed.
+        </p>
+      </section>
+
+      <section>
+        <h2 id="sets">Sets</h2>
+        <p>
+          A set is a collection of things.  In mathematics, the things
+          are most often numbers.  In the world of probability and
+          statistics, the items in sets are commonly numbers or the
+          outcomes of a process.  Sometimes the outcomes of a process
+          are represented as numbers, but it's important to remember
+          that statistics is generally interested in the randomness
+          that generated the outcomes of the process.
+        </p>
+
+        <p>
+          The symbol \( \emptyset \) is known as the empty set.  Using
+          curly braces, this set is written as \( \emptyset = \{\}\).
+          This is the set that consists of no elements.  It may seem
+          boring, but it's an important set in mathematical
+          statistics.
+        </p>
+
+        <p>
+          Of course, not all sets are empty.  The symbol \( \in \) is
+          used to state that an element is a member of a set.
+          Written \( x \in \mathcal{X} \), we read \(x \) is an
+          element of the set \( \mathcal{X} \).
+        </p>
+
+        <p>
+          For a non-empty set example, let's move to a set of numbers.
+          We write \( \mathcal{X} = \{1, 2, 3, 4, 5, 6 \} \), and read
+          this as the set \( \mathcal{X} \) consists of the integers
+          \(1, 2, 3, 4, 5,\) and \( 6 \).  You might imagine a single
+          die roll here, but a set of numbers might represent the
+          outcome of some process.
+        </p>
+
+        <div id="dieset"></div>
+
+        <p>
+          Imagine random sampling families and counting the number of
+          children each family has.  A set of possible number of
+          children in each family could be \( \mathcal{X} = \{1, 2, 3,
+          4 \} \).  The process here is that of a family having children.
+        </p>
+
+        <p>
+          Sets can be very contextualized and yet intangible.  For
+          instance, there exists a set of all faculty computers on the
+          Chico State campus.  Occassionaly our campus IT tries to
+          make this set more tangible by ensuring that their records
+          appropriately match the hardware in faculty offices.  We
+          might write this set as \( \mathcal{X} = \{x_1, x_2, \ldots,
+          x_N \}\), where \(x_n\) might be a unique ID associated with
+          each computer.
+        </p>
+
+        <p>
+          Sets need not be finite. The interval of all real numbers
+          from \( 0 \) to \( 1 \) inclusive is infinite, although
+          bounded.  We often write this set as \(\mathcal{X} = [0,
+          1]\).
+        </p>
+
+        <div id="unitset"></div>
+
+        <p>
+          In theory sets can be constructed by specifying a set of
+          rules that must hold for an element to be included.
+          Consider the so called set builder notation, to specify the
+          values of \(f(x) = x^2 \) such that the input \(x > \sqrt{5} \),
+          \(\{ x^2 | x > \sqrt{5} \} \).  The vertical pipe is to be read as
+          such that or given; the set of values of \( x \)
+          squared, such that \( x \) is strictly greater than \( 0 \).
+        </p>
+
+        <div id="setbuilder"></div>
+      </section>
+
+      <section>
+        <h2 id="setoperations">Set Operations</h2>
+
+        <p>
+          Much like \(+\) is an operation on two numbers, the
+          following set operations are binary operators where the
+          operands are sets instead of numbers.
+        </p>
+
+        <p>
+          To indicate set inclusion, that one set is contained in
+          another set, the symbol \( \subset \) is used.  For
+          instance, \(\{ 1, 2 \} \) is a subset of \( \{1, 2, 3\} \).
+          This is written as \(\{ 1, 2 \} \subset \{1, 2, 3\} \).  If
+          the subset has the potential to be equal to the superset,
+          then the symbol \( \subseteq \) is used. Though, some
+          authors use the symbol \( \subset \) even when equality is
+          possible.  When equality is not possible, the term proper
+          subset is used.
+        </p>
+
+        <p>
+          More generally, we might visualize a set hierarchy such as
+          \( A \subset B \subset \mathcal{X} \) as follows.  Imagine
+          that there are elements in the sets, even if they're not
+          drawn.
+        </p>
+
+        <div id="subset"></div>
+
+        <p>
+          The next two operations either combine the contents of two
+          sets, or reference only the elements contained in both sets.
+          These two operations are union \( \cup \) and intersection
+          \( \cap \), repsectively.  Pictures are my preferred
+          strategy for understanding \( \cup \) and \( \cap \).
+        </p>
+
+        <p>
+          Let \(A, B \subset \mathcal{X} \).  The union of \( A \) and
+          \( B \), written \( A \cup B \), is equal to the set that
+          consists of all elements in either set (counted only once).
+          In set builder notation, \( A \cup B = \{x | x \in A \text{
+          or } x \in B \} \).  The following display visualizes in
+          blue the set \( \color{#00BFFF}{A \cup B} \).
+          to addition.
+        </p>
+
+        <div id="union"></div>
+
+        <p>
+          Let \(A, B \subset \mathcal{X} \).  The intersection of \( A
+          \) and \( B \), written \( A \cap B \), is equal to the set
+          that consists of only the elements in both sets.  In set
+          builder notation, \(A \cap B = \{x | x \in A \text{ and } x
+          \in B \} \).  The following display visualizes in pink the
+          set \( \color{#00B78D}{A \cap B} \).
+        </p>
+
+        <div id="intersection"></div>
+
+        <p>
+          Set difference is the analogue to subtraction.  Let \(A
+          \subset B \).  The set difference \( \color{#FF6DAE}{B \setminus A} \)
+          consists of all the elements of \( B \) after removing those
+          elements that are also in \( A \).  Think of this as \( B \)
+          remove \( A \).
+        </p>
+
+        <div id="setminus"></div>
+
+        <p>
+          In another analogy to binary operations on numbers, the
+          symbol \( \times \) when applied to sets is called the
+          Cartesian product.  Let \( A, B \subset \mathcal{X} \).  The
+          set \( A \times B = \{(a, b) | a \in A \text{ and } b \in B
+          \} \), that is the set of ordered pairs that consist of one
+          element from each of the two sets in the product.
+        </p>
+
+        <p>
+          Our last set operation is named cardinality.  Cardinality
+          measures the number of elements in a set.  For the set of
+          suits in a standard deck of cards \( S = \{ \) &spades;,
+          <span style="color: red;">&hearts;</span>,
+          &clubs;, <span style="color: red;">&diams;</span> \( \} \),
+          the cardinality of \( S \) is \( |S| = 4 \).
+        </p>
+
+        <p>
+          A deck of cards is a set of 52 elements.  This set can be
+          thought of as the Cartesian product of the two sets \( S =
+          \{ \) &spades;, <span style="color: red;">&hearts;</span>,
+          &clubs;, <span style="color: red;">&diams;</span> \( \} \)
+          and \( N = \{ A, 2, 3, 4, 5, 6, 7, 8, 9, 10, J, Q, K \} \).
+          Since \( |S| = 4 \) and \( |N| = 13 \), the cardinality of a
+          standard deck of cards \( |D| = |S \times N| = 52 \).  This
+          is the thinking behind the analogy between the Cartesian
+          product and multiplication.
+        </p>
+      </section>
+      <hr>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+    </article>
+    <script type="text/javascript">
+      
+      let svgWidth = 400;
+      let svgHeight = svgWidth / 1.618;
+
+
+      let margin = { top: 20, right: 20, bottom: 40, left: 60 },
+          width = svgWidth - margin.left - margin.right,
+          height = svgHeight - margin.top - margin.bottom;
+      
+      function dieset() {
+          let svg = d3.select("#dieset")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", 75)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          
+          let xScale = d3.scaleLinear()
+              .domain([-1, 9])
+              .range([0, width]);
+
+          let xAxis = d3.axisBottom(xScale);
+          
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(xAxis
+                    .tickValues(d3.range(0, 9))
+                    .tickFormat(d3.format(",.0f"))
+                    .tickSizeOuter([0]))
+              .call(g => g.selectAll("text")
+                    .remove())
+              .call(g => g.selectAll("path")
+                    .attr("stroke-opacity", 0.25))
+              .call(g => g.selectAll(".tick")
+                    .filter((d, i) => (i < 1) || ( i > 6))
+                    .attr("stroke-opacity", 0.25))
+              .call(g => g.selectAll(".tick")
+                    .filter((d, i) => (i > 0) && (i < 7))
+                    .each(function(d, i) {
+                        d3.select(this)
+                            .append("foreignObject")
+                            .attr("x", -3)
+                            .attr("y", 10)
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .append("xhtml:text")
+                            .text(`\\( ${i+1} \\)`)}));
+
+
+          svg.append("path")
+              .attr("class", "right-arrow")
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
+              .attr("transform", `translate(${width}, 0) rotate(90)`);
+
+          svg.append("path")
+              .attr("class", "left-arrow")
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
+              .attr("transform", `rotate(-90)`);
+      }
+      dieset();
+
+      function unitset() {
+          let svg = d3.select("#unitset")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", 75)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          
+          let xScale = d3.scaleLinear()
+              .domain([-1, 2])
+              .range([0, width]);
+
+          let xAxis = d3.axisBottom(xScale);
+
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(xAxis
+                    .tickValues([0, 1])
+                    .tickFormat(d3.format(",.0f"))
+                    .tickSizeOuter([0]))
+              .call(g => g.selectAll("text")
+                    .remove())
+              .call(g => g.selectAll("path")
+                    .attr("stroke-opacity", 0.25))
+              .call(g => g.selectAll(".tick")
+                    .filter((d, i) => (i == 0) || (i == 1))
+                    .each(function(d, i) {
+                        d3.select(this)
+                            .append("foreignObject")
+                            .attr("x", -3)
+                            .attr("y", 10)
+                            .attr("width", 20)
+                            .attr("height", 20)
+                            .append("xhtml:text")
+                            .text(`\\( ${i} \\)`)}));
+
+          svg.append("line")
+              .attr("x1", xScale(0))
+              .attr("y1", 0)
+              .attr("x2", xScale(1.01))
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-width", 2);
+
+          svg.append("path")
+              .attr("class", "right-arrow")
+              .attr("opacity", 0.25)
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
+              .attr("transform", `translate(${width}, 0) rotate(90)`);
+
+          svg.append("path")
+              .attr("class", "left-arrow")
+              .attr("opacity", 0.25)
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
+              .attr("transform", `rotate(-90)`);
+      }
+      unitset();
+
+      function setbuilder() {
+          let svg = d3.select("#setbuilder")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", `translate( ${margin.left + 50}, ${margin.top})`);
+          
+          let xScale = d3.scaleLinear()
+              .domain([0, 4])
+              .range([0, width]);
+
+          let yScale = d3.scaleLinear()
+              .domain([0, 16])
+              .range([height, 0]);
+
+          let xAxis = d3.axisBottom(xScale),
+              yAxis = d3.axisLeft(yScale);
+
+
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("fill", "black")
+              .attr("stroke-opacity", 0.25)
+              .attr("stroke-width", 2)
+              .call(xAxis.ticks(5))
+              .attr("transform", `translate(0, ${height})`);
+
+          svg.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", height + 10)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append('xhtml:div')
+              .text("\\( x \\)");
+
+          svg.append("g")
+              .attr("class", "yaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .attr("stroke-opacity", 0.25)
+              .call(yAxis.ticks(5)
+                    .tickSizeOuter([0]))
+              .attr("transform", `translate(${xScale(0)}, 0)`);
+
+          svg.append("foreignObject")
+              .attr("x", -80)
+              .attr("y", height / 2 - 40)
+              .attr("width", 60)
+              .attr("height", 40)
+              .append('xhtml:div')
+              .text("\\( f(x) \\)");
+
+          let X = jStat.arange(-1, 5, 0.01),
+              data = [];
+          for (let n= 0; n < X.length; ++n) {
+              let tmpx = X[n];
+              data.push({x: tmpx, y: tmpx * tmpx});
+          };
+
+          // line  travels along function
+          let focus = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          let focus2 = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          svg.append('rect')
+              .style("fill", "none")
+              .style("pointer-events", "all")
+              .attr('width', width)
+              .attr('height', height)
+              .on('mouseover', mouseover)
+              .on('mousemove', mousemove)
+              .on('mouseout', mouseout);                   
+
+          let line = d3.line()
+              .x(d => xScale(d.x))
+              .y(d => yScale(d.y));
+
+          svg.append("path")
+              .data([data])
+              .attr("class", "function")
+              .attr("stroke", "black")
+              .attr("fill", "none")
+              .attr("stroke-width", 2)
+              .attr("stroke-opacity", 0.25)
+              .attr("d", line);
+          
+          svg.append("line")
+              .attr("x1", xScale(0))
+              .attr("y1", yScale(5))
+              .attr("x2", xScale(0))
+              .attr("y2", yScale(16))
+              .attr("stroke", "black")
+              .attr("stroke-width", 2);
+
+          svg.append("path")
+              .attr("class", "up-arrow")
+              .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
+              .attr("transform", `translate(${xScale(0)}, -0.1)`);
+
+          function mouseover() {
+              focus.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+          }              
+
+          let bisect = d3.bisector(d => d.x).left;
+
+          function mousemove() {
+              // recover coordinate we need
+              let x0 = xScale.invert(d3.mouse(this)[0]);
+              let i = bisect(data, x0, 1);
+              selectedData = data[i];
+              focus.attr("x1", xScale(0))
+                  .attr("y1", yScale(selectedData.y))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+              focus2.attr("x1", xScale(selectedData.x))
+                  .attr("y1", yScale(0))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+          }
+          function mouseout() {
+              focus.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+          }
+      }
+      setbuilder();
+
+      function subset() {
+          let svg = d3.select("#subset")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", height)
+              .attr("width", width)
+              .attr("stroke", "black")
+              .attr("rx", 15)
+              .attr("ry", 15)
+              .attr("fill", "none")
+              .attr("fill-opacity", "0");
+
+          svg.append("foreignObject")
+              .attr("x", width - 5)
+              .attr("y", height - 20)
+              .attr("width", 40)
+              .attr("height",40)
+              .append("xhtml:text")
+              .text("\\( \\mathcal{X} \\)");
+
+          let circles = [{r: 25, id: "A", cx: width / 3, cy: height / 2},
+                         {r: 75, id: "B", cx: width / 3 + 40, cy: height / 2}];
+
+          let events = svg.selectAll("events")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", "none");
+
+          let eventOutlines = svg.selectAll("eventOutline")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          eventOutlines.append("circle")
+              .attr("class", "outlines")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", "none")
+              .attr("stroke", "black");
+
+          eventOutlines.append("foreignObject")
+              .attr("x", d => d.cx - 10)
+              .attr("y", d => d.cy - 20)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append('xhtml:text')
+              .text(d => `\\( ${d.id} \\)`);
+
+      }
+      subset();
+      
+      function union() {
+          let svg = d3.select("#union")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", height)
+              .attr("width", width)
+              .attr("stroke", "black")
+              .attr("rx", 15)
+              .attr("ry", 15)
+              .attr("fill", "none")
+              .attr("fill-opacity", "0");
+
+          svg.append("foreignObject")
+              .attr("x", width - 5)
+              .attr("y", height - 20)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append("xhtml:text")
+              .text("\\( \\mathcal{X} \\)");
+
+          let circles = [{r: 75, id: "A", cx: width / 3, cy: height / 2},
+                         {r: 75, id: "B", cx: 2 * width / 3, cy: height /2}];
+
+          let events = svg.selectAll("events")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", "#00BFFF");
+
+          let eventOutlines = svg.selectAll("eventOutline")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          eventOutlines.append("circle")
+              .attr("class", "outlines")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", "none")
+              .attr("stroke", "black");
+
+          eventOutlines.append("foreignObject")
+              .attr("x", d => d.cx)
+              .attr("y", d => d.cy)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append('xhtml:text')
+              .text(d => `\\( ${d.id} \\)`);
+
+      }
+      union();
+
+      function intersection() {
+          let svg = d3.select("#intersection")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", height)
+              .attr("width", width)
+              .attr("stroke", "black")
+              .attr("rx", 15)
+              .attr("ry", 15)
+              .attr("fill", "none")
+              .attr("fill-opacity", "0");
+
+          svg.append("foreignObject")
+              .attr("x", width - 5)
+              .attr("y", height - 20)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append("xhtml:text")
+              .text("\\( \\mathcal{X} \\)");
+
+          let radius = 75;
+          let circles = [{r: 75, id: "A", cx: width / 3, cy: height / 2},
+                         {r: 75, id: "B", cx: 2 * width / 3, cy: height /2}];
+
+          let events = svg.append("g")
+              .attr("class", "circle");
+
+          events.append("clipPath")
+	      .attr("id", "circle-clip")
+              .append("circle")
+              .attr("r", radius)
+              .attr("cx", width / 3)
+              .attr("cy", height / 2)
+    	      .attr("fill", "#00BFFF");
+
+          events.append("clipPath")
+	      .attr("id", "circle-clip2")
+              .append("circle")
+              .attr("clip-path", "url(#circle-clip)")
+              .attr("r", radius)
+              .attr("cx", 2 * width / 3)
+              .attr("cy", height / 2)
+    	      .attr("fill", "none");
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("clip-path", "url(#circle-clip2)")
+              .attr("r", radius)
+              .attr("cx", 2 * width / 3)
+              .attr("cy", height / 2)
+              .attr("fill", "#00B78D");
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("r", radius)
+              .attr("cx", width / 3)
+              .attr("cy", height / 2)
+              .attr("fill", "none")
+              .attr("stroke", "black");
+          
+          events.append("foreignObject")
+              .attr("x", width / 3)
+              .attr("y", height / 2)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append("xhtml:text")
+              .text("\\( A \\)");
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("r", radius)
+              .attr("cx", 2 * width / 3)
+              .attr("cy", height / 2)
+              .attr("fill", "none")
+              .attr("stroke", "black");
+
+
+          events.append("foreignObject")
+              .attr("x", 2 * width / 3)
+              .attr("y", height / 2)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append("xhtml:text")
+              .text("\\( B \\)");
+
+
+      }
+      intersection();
+
+      function setminus() {
+          let svg = d3.select("#setminus")
+              .append("svg")
+              .attr("width",  svgWidth)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          svg.append("rect")
+              .attr("x", 0)
+              .attr("y", 0)
+              .attr("height", height)
+              .attr("width", width)
+              .attr("stroke", "black")
+              .attr("rx", 15)
+              .attr("ry", 15)
+              .attr("fill", "none")
+              .attr("fill-opacity", "0");
+
+          svg.append("foreignObject")
+              .attr("x", width - 5)
+              .attr("y", height - 20)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append("xhtml:text")
+              .text("\\( \\mathcal{X} \\)");
+
+          let circles = [{r: 75, id: "B", cx: width / 3 + 40, cy: height / 2},
+                         {r: 25, id: "A", cx: width / 3, cy: height / 2}];
+
+          let events = svg.selectAll("events")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          events.append("circle")
+              .attr("class", "circle")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", "none");
+
+          let eventOutlines = svg.selectAll("eventOutline")
+              .data(circles)
+              .join("g")
+              .attr("class", "circle")
+
+          eventOutlines.append("circle")
+              .attr("class", "outlines")
+              .attr("r", d => d.r)
+              .attr("cx", d => d.cx)
+              .attr("cy",  d => d.cy)
+              .attr("fill", d => ((d.id === "A") ? "#FFFFF8" : "#FF6DAE"))
+              .attr("stroke", "black");
+
+          eventOutlines.append("foreignObject")
+              .attr("x", d => d.cx - 10)
+              .attr("y", d => d.cy - 20)
+              .attr("width", 40)
+              .attr("height", 40)
+              .append('xhtml:text')
+              .text(d => `\\( ${d.id} \\)`);
+
+      }
+      setminus();
+    </script>
+  </body>
+</html>
