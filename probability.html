@@ -22,7 +22,10 @@
     <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script> -->
     <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
 
+    <!-- local jStat -->
     <script type="text/javascript" src="jstat.min.js"></script>
+    <!-- fetch jStat -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
@@ -118,7 +121,7 @@
         <p>
           Luckily, since \( S \) is finite, a relatively simple
           solution works here.  Put \( \mathbb{P} \) to be the set
-          function that maps arbitrary sets \( B \subset S \) to the fraction 
+          function that maps arbitrary sets \( B \subset S \) to the fraction
 
           \[ \mathbb{P}[B] = \frac{|B|}{|S|}. \]
 
@@ -210,9 +213,9 @@
           probability \( \mathbb{P}[{\color{#00BFFF} A}] = \) <span id="PA"></span>, but
           feel free to change it.
         </p>
-        
+
         <div id="A1and2"></div>
-        
+
         <p>
           The third axiom of probability will be better understood
           with a simple example.  Consider the sample space of a fair
@@ -293,7 +296,7 @@
 
           \[ \mathbb{P}[A | B] = \frac{\mathbb{P}[A \cap
           B]}{\mathbb{P}[B]}\]
-          
+
           and is known as conditional probability.  The display below
           allows you to drag the two events (circles) to increase or
           decrease the intersection.
@@ -308,7 +311,7 @@
           \) also.  When the two events do overlap, conditional
           probability scales the probability of the intersection
           relative to \( \mathbb{P}[B] \) instead of relative to \(
-          \mathbb{P}[S] = 1 \).  
+          \mathbb{P}[S] = 1 \).
         </p>
 
         <div id="condprobabilitystuff"></div>
@@ -375,13 +378,13 @@
         </p>
 
       </section>
-      
+
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
     </article>
-    
+
     <script type="text/javascript">
-      
+
       let svgWidth = 400;
       let svgHeight = svgWidth / 1.618;
 
@@ -390,7 +393,7 @@
           height = svgHeight - margin.top - margin.bottom;
 
       let support = height * width;
-      
+
       function area(C) {
           return Math.PI * C.r * C.r;
       }
@@ -425,7 +428,7 @@
           }
           return 0;
       }
-      
+
       function A1and2() {
           let svg = d3.select("#A1and2")
               .append("svg")
@@ -433,7 +436,7 @@
               .attr("height", svgHeight)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          
+
           svg.append("rect")
               .attr("x", 0)
               .attr("y", 0)
@@ -556,7 +559,7 @@
               .attr("height", svgHeight)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          
+
           let xScale = d3.scaleLinear()
               .domain([0, 1])
               .range([0, width]);
@@ -652,7 +655,7 @@
               .attr("fill-opacity", "0");
 
           const circles = [{x: width/4, y: height/2, label: "A",
-                            color: "#00BFFF", r: radius}, 
+                            color: "#00BFFF", r: radius},
                            {x: width/4 + 1.25*radius, y: height/2, label: "B",
                             color: "#FF6DAE", r: radius}];
 
@@ -682,7 +685,7 @@
               .append("xhtml:text")
               .text("\\( S \\)");
 
-          
+
           node.append("foreignObject")
               .attr("x", d => -15)
               .attr("y", d => -20)
