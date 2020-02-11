@@ -35,7 +35,8 @@
       <p class="subtitle">Edward A. Roualdes</p>
       <section>
         <h2 id="contents">Contents</h2>
-        <bold><a href="#introduction">Introductino</a></bold></br>
+        <bold><a href="#introduction">Introduction</a></bold></br>
+        <bold><a href="#intuition">Intuition</a></bold></br>
       </section>
 
       <section>
@@ -45,11 +46,15 @@
           an assumed distribution function and a randomly sampled
           dataset from a (singular) population of interest.  To
           estimate the parameters from the population of interest,
-          standard methods of calculus are employed.  The goal is to
-          find the most likely values of the population parameters
-          given a particular dataset.  As such the best guess of the
-          parameters derived from this method is called the maximum
-          likelihood estimate.
+          standard methods of
+          calculus<span class="marginnote"><a href="TODO">Apex
+          Calculus I</a> is a great reference if you need an Open
+          Educational Resource (free) resource to review derivatives,
+          the calculus behind maximization andminimization.</span> are
+          employed.  The goal is to find the most likely values of the
+          population parameters given a particular dataset.  As such
+          the best guess of the parameters derived from this method is
+          called the maximum likelihood estimate.
         </p>
 
         <p>
@@ -60,18 +65,274 @@
 
           \[ \hat{\theta} = \text{argmax}_{\theta} L( \theta | \mathbf{X}) \]
 
-          to denote that the best guess is the maximal argument to the
-          likelihood function given the data \( \mathbf{X} \).  The
-          calculus is then left to the practioner.  These notes aim to
-          provide a short introduction to the intuition behind the
-          likelihood functions setup and to show the most common
-          analytical strategy for finding the maximum likelihood
-          estimates.
+          to denote that the best guess is the maximal
+          argument<span class="marginnote">Don't let the new notation
+          \( \text{argmax}_x f(x) \) stand in your way.  Consider an
+          example that you can reason about somewhat easily. What is
+          the argument \( x \) that maximizes the function \(f(x) =
+          -x^2 \)?</span> to the likelihood function given the data \(
+          \mathbf{X} \).  The calculus is then left to the practioner.
+          These notes aim to provide a short introduction to the
+          intuition behind the likelihood functions setup and to show
+          the most common analytical strategy for finding the maximum
+          likelihood estimates.
+        </p>
+      </section>
+
+      <section>
+        <h2 id="intuition">Intuition</h2>
+
+        <p>
+          The likelihood function is defined relative to the density
+        function \( f \) of the distribution that is assumed to fit
+        the population of interest.  The likelihood is defined to be
+        the product of the density function evaluated at each
+        observation in the sample.  We think of the likelihood
+        function as a function of the parameter(s) of interest, here
+        generalized to \( \theta \), given the random variables \(
+        \mathbf{X} \).
+
+        \[ L(\theta | \mathbf{X}) = \prod_{n = 1}^N f(X_n | \theta) \]
+        </p>
+
+        <p>
+          The intuition behind the products of the density function
+          goes like this.  Imagine you have \( 3 \) observations from a fair
+          coin, H, H, T, H.  The probability associated with this event is
+
+          \[ \frac{1}{2} \cdot \frac{1}{2} \cdot \frac{1}{2} \cdot
+          \frac{1}{2}. \]
+        </p>
+
+        <p>
+          Now, imagine that you don't know that the coin is fair,
+          instead the probability of heads is just \( p \). The
+          probability<span class="marginnote">You'd be on the right
+          track if you're imagining that in four flips, three heads
+          and one tail might suggest that \( p = 0.75 \).</span> is
+          rewritten as
+
+          \[ p \cdot p \cdot (1 - p) \cdot p. \]
+        </p>
+
+        <p>
+          Next, write this probability using the density function of a
+          Bernoulli distribution<span class="marginnote">See the notes
+          on the <a href="bernoulli.html">Bernoulli distribution</a>
+          if you need a quick refresher</span>.  Since we map heads to
+          \( 1 \) and tails to \( 0 \), we have
+
+          \[ f(1 | p) \cdot f(1 | p) \cdot f(0 | p) \cdot f(1 | p). \]
+        </p>
+
+        <p>
+          The last step in understanding the setup of the likelihood
+          function is to recognize that until we observe, say, H, H, T, H,
+          we might as well treat these observations as random
+          variables, \( X_1, X_2, X_3, X_4 \).  In this case the functional form is
+
+          \[ f(X_1 | p) \cdot f(X_2 | p) \cdot f(X_3 | p) \cdot f(X_4 | p). \]
+        </p>
+
+        <p>
+          The discussion above captures the intuition behind the setup
+          of the likelihood function.  From here the main differences
+          are notational and a conceptual understanding of how we can
+          treat this product as a function of the unknown parameter \(
+          p \).
+        </p>
+
+        <p>
+          To get from
+
+          \[ f(X_1 | p) \cdot f(X_2 | p) \cdot f(X_3 | p) \cdot f(X_4 | p) \]
+
+          to the formal definition of the likelihood function, we
+          generalize the unknown parameter \( p \) to \( \theta \),
+          thinking that this method should apply to any distribution's
+          density function, and we use product notation, which is
+          analogous to summation notation, to expand the sample to any
+          size \( N \)
+
+          \[ \prod_{n = 1}^N f(X_n | \theta). \]
+        </p>
+
+        <p>
+          Once we have \( N \) observartions, our sample of random
+          variables is bound to specific values.  On the other hand,
+          the unknown parameter \( \theta \) is not
+          specified.  The conceptual jump of the
+          likelihood function is to treat the form
+
+          \[ \prod_{n = 1}^N f(X_n | \theta ) \]
+
+          as a function of the unknown parameter \( \theta \).
+        </p>
+
+        <p>
+          The notation \( L(\theta | \mathbf{X}) \) implies that the
+          likelihood function maps the combination of data \(
+          \mathbf{X} \) and density function \( f \) to unique value
+          of the parameter \( \theta \)<span class="marginnote">If a
+          likelihood function maps one sample \( \mathbf{X} \) to more
+          than one values of \( \theta \), we call the parameters \(
+          \theta \) unidentifiable.</span>.  The specific value of \(
+          \theta \) that maximizes the likelihood function is the best
+          guess of the unknown population parameter.  The value \(
+          \hat{\theta} \) is called the maximum likelihood estimate of
+          \( \theta \).
+        </p>
+
+        <p>
+          To bring the general likelihood function back down to earth,
+          consider the following plot depicting the scenario
+          introduced above: the observations H, H, T, H from a
+          Bernoulli distribution with unknown population parameter \(
+          p \).  From exactly these four observations, the argument
+          that maximizes the likelihood function is \( \hat{p} = 0.75
+          \).
+        </p>
+
+        <div id="bernoulli"></div>
+      </section>
+
+      <section>
+        <h2 id="maximization">Maximization</h2>
+        <p>
+          The best way to explain maximization is to walk through an
+          example.  Suppose you have a sample of \( N \) observations
+          \( X_1, \ldots, X_N \) all randomly sampled from the same
+          population.  We'll assume the population follows the
+          Rayleigh distribution with unknown parameter \( \sigma \),
+          to be estimated from the data.  The density function of the
+          Rayleigh distribution is
+
+          \[ f(x | \sigma ) = \frac{x}{\sigma^2} e^{-x^2 / (2
+          \sigma^2)} \]
+
+          for \( x \in [0, \infty) \) and \( \sigma > 0 \).
+        </p>
+
+        <p>
+          To find the maximum likelihood
+          estimate,<span class="marginnote">First step, write out the
+          likelihood function.</span> by writing out the likelihood
+          function.
+
+          \[
+          \begin{aligned}
+          L( \sigma | \mathbf{X} ) & = \prod_{n = 1}^N f(X_n | \sigma) \\
+          & = \prod_{n = 1}^N \frac{X_n}{\sigma^2} e^{-X_n^2 / (2
+          \sigma^2)} \\
+          \end{aligned}
+          \]
+        </p>
+
+        <p>
+          The goal is to find the value \( \sigma \) that maximizes
+          the likelihood function \(L( \sigma | \mathbf{X} ) \).  Both
+          humans and computers have difficulty working with products
+          and exponents of functions. Therefore, it is common take the
+          natural log<span class="marginnote">Next, find the
+          log-likelihood, \( \ell = \log{L} \).</span> of the
+          likelihood function.  This is so common, the log of the
+          likelihood function is often just referred to as the
+          log-likelihood function.  We'll denote this function \(
+          \ell(\sigma | \mathbf{X}) = \log{L(\sigma | \mathbf{X} ) }
+          \).
+        </p>
+
+        <div id="rayleigh"></div>
+
+        <p>
+          Recall from calculus that we can find local maxima/minima by
+          differentiating a function, setting the derivative equal to
+          zero, and solving for the variable of interest.  In this
+          scenario, the variable of interest is the unknown population
+          parameter.
+        </p>
+
+        <p>
+          Often it's helpful to simplify the log-likelihood function
+          to aid differentiation.  The simplified log-likelihood is
+
+          \[
+          \begin{aligned}
+          \ell(\sigma | \mathbf{X}) & = \sum_{n = 1}^N \log \left\{ \frac{X_n}{\sigma^2} e^{-X_n^2 / (2 \sigma^2)} \right\} \\
+          & = \sum_{n = 1}^N \left\{ \log{X_n} - 2 \log{\sigma} - X_n^2 / (2\sigma^2) \right\} \\
+          & = \sum_{n = 1}^N \log{X_n} - 2N\log{\sigma} - \frac{1}{2\sigma^2}\sum_{n = 1}^N X_n^2 \\
+          \end{aligned}
+          \]
+        </p>
+
+        <p>
+          Proceed by taking the
+          derivative<span class="marginnote">Take the derivative of
+          the simplified log-likelihood with respect to the unknown
+          parameter.</span>, with respect to the unknown population
+          parameter, of the simplified log-likelihood.
+
+          \[ \frac{d \ell}{d \sigma} = -\frac{2N}{\sigma} + \frac{1}{\sigma^3} \sum_{n = 1}^N X_n^2\]
+        </p>
+
+        <p>
+          Set the derivative equal to zero<span class="marginnote">
+          Set the derivative equal to zero and solve.</span> and solve
+          for the unknown population parameter.
+
+          \[ \frac{2N}{\sigma} = \frac{1}{\sigma^3} \sum_{n=1}^N X_n^2 \]
+        </p>
+
+        <p>
+        Collecting \( \sigma \)s on the left hand side yields,
+
+          \[ 2N\sigma^2 = \sum_{n=1}^N X_n^2. \]
+        </p>
+
+        <p>
+          Manipulate the expression until you find a
+          solution for the parameter of interest.  At this point,
+          we put a hat over the parameter to recognize that it is our
+          best guess of the parameter of interest.
+
+          \[ \hat{\sigma} = \sqrt{\frac{1}{2N} \sum_{n = 1}^N X_n^2} \]
+        </p>
+
+        <p>
+          The maximum likelihood estimate<span class="marginnote">Put
+          a hat on your solution to formally note that this is your
+          best guess based on the data.</span> \( \hat{\sigma} \) is
+          the final solution.  With data from a population assumed to
+          follow the Rayleigh distribution, this is the estimate for
+          the population parameter \( \sigma \).
+        </p>
+
+
+      </section>
+
+      <section>
+        <h2 id="more">More thoughts</h2>
+
+        <p>
+         Moreover, the result is more than just a
+          variable that represents a single number as your best guess.
+          In reality, the solution is an estimator.  That is, the
+          solution is a strategy to estimate \( \sigma \).  In this
+          case, the solution says to sum the squares of the data,
+          divide by two times the sample size, and then take the
+        square root of the whole thing.
+        </p>
+
+        <p>
+          Thinking like this, we call this the maximum likelihood
+          estimator.  It is a strategy to estimate the parameter.
         </p>
       </section>
 
       <hr>
-      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative
+      Commons Attribution-NonCommercial-ShareAlike 4.0
+      International</a>
     </article>
 
     <script type="text/javascript">
@@ -82,6 +343,291 @@
       let margin = { top: 40, right: 20, bottom: 40, left: 60 },
           width = svgWidth - margin.left - margin.right,
           height = svgHeight - margin.top - margin.bottom;
+
+      function bernoulli() {
+          let svg = d3.select("#bernoulli")
+              .append("svg")
+              .attr("width",  svgWidth + 60)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", `translate( ${margin.left + 60}, ${margin.top - 10})`);
+
+          let xScale = d3.scaleLinear()
+              .domain([0, 1])
+              .range([0, width]);
+
+          let yScale = d3.scaleLinear()
+          //.domain([-15, -1])
+              .domain([0, 0.15])
+              .range([height, 0]);
+
+          let xAxis = d3.axisBottom(xScale),
+              yAxis = d3.axisLeft(yScale);
+
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(xAxis.ticks(5))
+              .attr("transform", `translate(0, ${height})`);
+
+          svg.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", height + 10)
+              .attr("width", 40)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( p \\)");
+
+          svg.append("g")
+              .attr("class", "yaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(yAxis.ticks(4)
+                    .tickFormat("")
+                    .tickSizeOuter([0]))
+              .attr("transform", `translate(${xScale(0)}, 0)`);
+
+          svg.append("foreignObject")
+              .attr("x", -120)
+              .attr("y", height / 2 - 40)
+              .attr("width", 90)
+              .attr("height", 40)
+              .append('xhtml:div')
+              .text("\\( L(p | \\mathbf{X}) \\)");
+
+          function L(p) {
+              return p ** 3 * (1 - p);
+          }
+
+          let X = jStat.arange(0.01, 1 - 0.01, 0.01),
+              data = [];
+          for (let n= 0; n < X.length; ++n) {
+              let tmpx = X[n];
+              data.push({x: tmpx, y: L(tmpx)});
+          };
+
+          // line  travels along function
+          let focus = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          let focus2 = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          svg.append('rect')
+              .style("fill", "none")
+              .style("pointer-events", "all")
+              .attr('width', width)
+              .attr('height', height)
+              .on('mouseover', mouseover)
+              .on('mousemove', mousemove)
+              .on('mouseout', mouseout);
+
+          let line = d3.line()
+              .x(d => xScale(d.x))
+              .y(d => yScale(d.y));
+
+          svg.append("path")
+              .data([data])
+              .attr("class", "function")
+              .attr("stroke", "black")
+              .attr("fill", "none")
+              .attr("stroke-width", 2)
+              .attr("d", line);
+
+          function mouseover() {
+              focus.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+          }
+
+          let bisect = d3.bisector(d => d.x).left;
+
+          function mousemove() {
+              // recover coordinate we need
+              let x0 = xScale.invert(d3.mouse(this)[0]);
+              let i = bisect(data, x0, 1);
+              selectedData = data[i];
+              focus.attr("x1", xScale(0))
+                  .attr("y1", yScale(selectedData.y))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+              focus2.attr("x1", xScale(selectedData.x))
+                  .attr("y1", yScale(0))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+          }
+          function mouseout() {
+              focus.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+          }
+
+      }
+
+      bernoulli();
+
+      function rayleigh() {
+
+          function rngRayleigh(N, s) {
+              return d3.range(N).map(d =>  s * Math.pow(-Math.log(Math.random()), 0.5));
+          }
+
+          function l(s, x) {
+              let N = x.length;
+              let one = jStat.sum(x.map(d => Math.log(d)));
+              let two = -2 * N * Math.log(s);
+              let three = -jStat.sumsqrd(x) / (s * s);
+              return two + three;
+          }
+
+          let X = rngRayleigh(10, 2);
+          let sigma = jStat.arange(0.1, 3, 0.01),
+              data = [];
+          for (let n = 0; n < sigma.length; ++n) {
+              data.push({x: sigma[n],
+                         y: Math.exp(l(sigma[n], X))});
+          };
+
+          let yMin = d3.min(data, d => d.y),
+              yMax = d3.max(data, d => d.y);
+
+          let svg = d3.select("#rayleigh")
+              .append("svg")
+              .attr("width",  svgWidth + 60)
+              .attr("height", svgHeight)
+              .append("g")
+              .attr("transform", `translate( ${margin.left + 60}, ${margin.top - 10})`);
+
+          let xScale = d3.scaleLinear()
+              .domain([0, 3])
+              .range([0, width]);
+
+          let yScale = d3.scaleLinear()
+          //.domain([-15, -1])
+              .domain([yMin, yMax])
+              .range([height, 0]);
+
+          let xAxis = d3.axisBottom(xScale),
+              yAxis = d3.axisLeft(yScale);
+
+          svg.append("g")
+              .attr("class", "xaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(xAxis.ticks(5))
+              .attr("transform", `translate(0, ${height})`);
+
+          svg.append("foreignObject")
+              .attr("x", width / 2)
+              .attr("y", height + 10)
+              .attr("width", 40)
+              .attr("height", 50)
+              .append('xhtml:div')
+              .text("\\( \\sigma \\)");
+
+          svg.append("g")
+              .attr("class", "yaxis")
+              .attr("fill", "black")
+              .attr("stroke-width", 2)
+              .call(yAxis.ticks(4)
+                    .tickFormat("")
+                    .tickSizeOuter([0]))
+              .attr("transform", `translate(${xScale(0)}, 0)`);
+
+          svg.append("foreignObject")
+              .attr("x", -120)
+              .attr("y", height / 2 - 40)
+              .attr("width", 90)
+              .attr("height", 40)
+              .append('xhtml:div')
+              .text("\\( \\ell(\\sigma | \\mathbf{X}) \\)");
+
+          // line  travels along function
+          let focus = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          let focus2 = svg.append('line')
+              .attr("x1", 0)
+              .attr("y1", 0)
+              .attr("x2", 0)
+              .attr("y2", 0)
+              .attr("stroke", "black")
+              .attr("stroke-opacity", 0);
+
+          svg.append('rect')
+              .style("fill", "none")
+              .style("pointer-events", "all")
+              .attr('width', width)
+              .attr('height', height)
+              .on('mouseover', mouseover)
+              .on('mousemove', mousemove)
+              .on('mouseout', mouseout);
+
+          let line = d3.line()
+              .x(d => xScale(d.x))
+              .y(d => yScale(d.y));
+
+          svg.append("path")
+              .data([data])
+              .attr("class", "function")
+              .attr("stroke", "black")
+              .attr("fill", "none")
+              .attr("stroke-width", 2)
+              .attr("d", line);
+
+          function mouseover() {
+              focus.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 1)
+                  .attr("stroke-dasharray", (3, 3));
+          }
+
+          let bisect = d3.bisector(d => d.x).left;
+
+          function mousemove() {
+              // recover coordinate we need
+              let x0 = xScale.invert(d3.mouse(this)[0]);
+              let i = bisect(data, x0, 1);
+              selectedData = data[i];
+              focus.attr("x1", xScale(0))
+                  .attr("y1", yScale(selectedData.y))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+              focus2.attr("x1", xScale(selectedData.x))
+                  .attr("y1", yScale(0))
+                  .attr("x2", xScale(selectedData.x))
+                  .attr("y2", yScale(selectedData.y));
+
+          }
+          function mouseout() {
+              focus.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+              focus2.attr("stroke-opacity", 0)
+                  .attr("stroke-dasharray", (3, 3));
+          }
+      }
+      rayleigh();
 
     </script>
   </body>
