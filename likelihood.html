@@ -431,7 +431,7 @@
               .attr('height', height)
               .on('mouseover', mouseover)
               .on('mousemove', mousemove)
-              .on('mouseout', mouseout);
+              .on('mouseleave', mouseout);
 
           let line = d3.line()
               .x(d => xScale(d.x))
@@ -459,6 +459,7 @@
               let x0 = xScale.invert(d3.mouse(this)[0]);
               let i = bisect(data, x0, 1);
               selectedData = data[i];
+              if ( selectedData ) {
               focus.attr("x1", xScale(0))
                   .attr("y1", yScale(selectedData.y))
                   .attr("x2", xScale(selectedData.x))
@@ -468,7 +469,7 @@
                   .attr("y1", yScale(0))
                   .attr("x2", xScale(selectedData.x))
                   .attr("y2", yScale(selectedData.y));
-
+              }
           }
           function mouseout() {
               focus.attr("stroke-opacity", 0)
@@ -581,7 +582,7 @@
               .attr('height', height)
               .on('mouseover', mouseover)
               .on('mousemove', mousemove)
-              .on('mouseout', mouseout);
+              .on('mouseleave', mouseout);
 
           let line = d3.line()
               .x(d => xScale(d.x))
