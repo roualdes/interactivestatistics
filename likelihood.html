@@ -47,7 +47,7 @@
           dataset from a (singular) population of interest.  To
           estimate the parameters from the population of interest,
           standard methods of
-          calculus<span class="marginnote"><a href="TODO">Apex
+          calculus<span class="marginnote"><a href="http://www.apexcalculus.com/">Apex
           Calculus I</a> is a great reference if you need an Open
           Educational Resource (free) resource to review derivatives,
           the calculus behind maximization andminimization.</span> are
@@ -199,13 +199,13 @@
       <section>
         <h2 id="maximization">Maximization</h2>
         <p>
-          The best way to explain maximization is to walk through an
-          example.  Suppose you have a sample of \( N \) observations
-          \( X_1, \ldots, X_N \) all randomly sampled from the same
-          population.  We'll assume the population follows the
-          Rayleigh distribution with unknown parameter \( \sigma \),
-          to be estimated from the data.  The density function of the
-          Rayleigh distribution is
+          The best way to demonstrate maximizing a likelihood function
+          is to walk through an example.  Suppose you have a sample of
+          \( N \) observations \( X_1, \ldots, X_N \) all randomly
+          sampled from the same population.  We'll assume the
+          population follows the Rayleigh distribution with unknown
+          parameter \( \sigma \), to be estimated from the data.  The
+          density function of the Rayleigh distribution is
 
           \[ f(x | \sigma ) = \frac{x}{\sigma^2} e^{-x^2 / (2
           \sigma^2)} \]
@@ -216,7 +216,7 @@
         <p>
           To find the maximum likelihood
           estimate,<span class="marginnote">First step, write out the
-          likelihood function.</span> by writing out the likelihood
+          likelihood function.</span> start by writing out the likelihood
           function.
 
           \[
@@ -310,24 +310,24 @@
 
       </section>
 
-      <section>
-        <h2 id="more">More thoughts</h2>
+      <!-- <section> -->
+      <!--   <h2 id="more">More thoughts</h2> -->
 
-        <p>
-         Moreover, the result is more than just a
-          variable that represents a single number as your best guess.
-          In reality, the solution is an estimator.  That is, the
-          solution is a strategy to estimate \( \sigma \).  In this
-          case, the solution says to sum the squares of the data,
-          divide by two times the sample size, and then take the
-        square root of the whole thing.
-        </p>
+      <!--   <p> -->
+      <!--    Moreover, the result is more than just a -->
+      <!--     variable that represents a single number as your best guess. -->
+      <!--     In reality, the solution is an estimator.  That is, the -->
+      <!--     solution is a strategy to estimate \( \sigma \).  In this -->
+      <!--     case, the solution says to sum the squares of the data, -->
+      <!--     divide by two times the sample size, and then take the -->
+      <!--   square root of the whole thing. -->
+      <!--   </p> -->
 
-        <p>
-          Thinking like this, we call this the maximum likelihood
-          estimator.  It is a strategy to estimate the parameter.
-        </p>
-      </section>
+      <!--   <p> -->
+      <!--     Thinking like this, we call this the maximum likelihood -->
+      <!--     estimator.  It is a strategy to estimate the parameter. -->
+      <!--   </p> -->
+      <!-- </section> -->
 
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative

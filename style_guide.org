@@ -1,0 +1,15 @@
+* axis lines
+  .attr("fill", "black")
+  .attr("stroke-width", 2)
+  .attr("stroke-opacity", 0.25)
+
+* data lines
+  .attr("stroke", "black")
+  .attr("fill", "none")
+  .attr("stroke-width", 2)
+
+* axis tick value size
+  .attr("class", "xaxis")
+  .attr("fill", "black")
+  .attr("stroke-width", 2)
+  .style("font-size", "18px")
