@@ -52,18 +52,20 @@
           The easiest way to think about density functions is as
           functions with a small set of properties.  The properties
           that make an ordinary function \( f \) defined on a space \(
-          S \) a density function are
+          S \) a density function are <span class="marginnote">I use
+          the phrase density function to refer to both probability
+          mass functions and probability density functions.</span>
 
           <ol>
-            <li> \( f : S \rightarrow \mathbb{R} \), that is \( f \) is real-valued, </li>
-            <li> for any \( x \in S \), \( f(x) \geq 0 \), and </li>
-            <li> \( \int_{S} f = 1 \).
+            <li> \( f \) is real-valued, \( f : S \rightarrow \mathbb{R} \),
+            <li> \( f \) is non-negative, for any \( x \in S \), \( f(x) \geq 0 \), and </li>
+            <li> the area under the function is equal to one, \( \int_{S} f = 1 \).
           </ol>
         </p>
 
         <p>
           I intentionally leave out the \( dx \) for a number of
-          reasons.  First, the meaning of \( dx \) is not clear, see
+          reasons.  First, the meaning of \( dx \) is not obvious, see
           the Section "Meaning of the symbol \( dx \)" on Wikipedia's
           page on
           the <a href="https://en.wikipedia.org/wiki/Integral#Meaning_of_the_symbol_dx">Integral</a>
@@ -81,6 +83,154 @@
           the integral is really an integral.
         </p>
 
+        <p>
+            These lecture notes first introduce the two most common
+            structures of sample spaces for density functions,
+            discrete and continous.  Some examples follow, where we
+            describe a handful of scenarios where specific density
+            functions are employed.  The density functions highlighted
+            all come from well known and named distributions.  Last,
+            we explore some properties of density functions. 
+        </p>
+      </section>
+
+      <section>
+          <h2 id="discrete">Discrete Sample Spaces</h2>
+          <p>
+              The third property above depends on the structure of the
+              space \( S \).  When \( S \) is a countable set, say \(
+              \mathbb{N} \), we have
+
+              \[ \sum_{x \in S} f(x) = 1. \]
+          </p>
+
+          <p>
+              Let's try a simple example.  Consider a possibly unfair
+              coin, where we denote heads as one and tails as zero, so
+              that \( S =
+              \{0, 1\} \).  In this case, we'd call \( f \) the density
+              function of a Bernoulli distribution <span
+              class="marginnote">Check out my lecture notes on the
+              family of <a href="notes/bernoulli.html">Bernoulli
+              distributions</a>.</span> with parameter \( p \)
+              and has the following form
+
+              \[ f(x | p) = p^x (1 - p) ^{1 - x}. \]
+          </p>
+
+          <p>
+              You should verify that all three properties
+              above are met with the density function \( f(x | p) \)
+              defined for arbitrary \( p \in (0, 1) \).
+          </p>
+
+          <p>
+              A unique feature of density functions on countable spaces
+              is that probabilities of points are equal to the density
+              function evaluated at that point, \( \mathbb{P}[\{x\}] =
+              f(x) \).  This property is not true for density
+              functions defined on uncountable spaces.
+          </p>
+      </section>
+
+      <section>
+          <h2 id="continous">Continuous Sample Spaces</h2>
+
+          <p>
+              When \( S \) is an uncountable space, say \( \mathbb{R}
+              \), we have
+
+              \[ \int_S f(x) dx. \]
+          </p>
+
+          <p>
+              Let's try an example. Consider the family of Exponential
+              Distributions, defined on \( S = \mathbb{R}^+ \), where
+              the density function depends on the population parameter
+              \( \lambda \in \mathbb{R}^+ \) and has the form
+
+              \[ f(x | \lambda) = \lambda \exp{(-\lambda x)}. \]
+          </p>
+
+          <p>
+              You should verify that all three properties above are
+              met with the density function \( f(x | \lambda) \)
+              defined for arbitrary \( \lambda \in \mathbb{R}^+ \).
+          </p>
+      </section>
+
+      <section>
+          <h2 id="examples">Examples</h2>
+
+          <p>
+              Density functions are the basic building blocks of
+              applied statisticians.<span class="marginnote">Density
+              functions are closely associated with named
+              distribution functions.  All the examples below will
+              highlight density function which come from a named
+              distribution.</span>  Their basic structure helps
+              statisticians model the stochastic world with some
+              relatively simple tricks.
+          </p>
+
+          <p>
+              <b>Bernoulli Distribution</b>.  The family of Bernoulli
+              distributions have a key characteristic that makes
+              identifying when to use the density function of a
+              Bernoulli distribution more obvious than most other
+              distributions.  The sample space \( S \) for a Bernoulli
+              distribution has exactly two elements, which are often
+              taken to be \( \{0, 1\} \) no matter what values the
+              real world process produces.  So long as there's only
+              two outcomes, label the one that is more interesting one
+              and the other zero.
+          </p>
+
+          <p>
+              The classic example for a Bernoulli distribution is a
+              coin.  The Bernoullid distribution has a single parameter \(
+              p \), which statisticians to model the world by estimating
+              \( p \) from data.  Because the parameter \( p \) can be any
+              value in \( (0, 1) \), the density function of a Bernoulli
+              distribution is often used in more realistic scenarios. The
+              US presidential elections are often modeled with a Bernoulli
+              density function.
+          </p>
+
+          <p>
+              For a third example, imagine that you are interested in
+              testing a specific version of your web-browser.  You
+              randomly sample \( 1000 \) web-pages and load them on
+              your browser.  If a particular page loads correctly,
+              label it one.  If a particular page does not load
+              correctly, label it zero.  These \( 1000 \) data points
+              consisting of ones and zeros are called observations.
+              The data theoretically came from a Bernoulli
+              distribuiton with a value of \( p \) that is unknown.
+              Mathematical statisticians<span class="marginnote">Two
+              more popular techniques to estimating population
+              parameters are the <a
+                                     href="notes/likelihood.html">likelihood method</a> and
+              Bayesian statistics.</span>dream up mathematical ways to
+              estimate \( p \) using available data, and applied
+              statisticians use these mathematical tools to estimate
+              \( p \) using their \( 1000 \) observations and make
+              claims about the world based on their findings.
+          </p>
+
+          <p>
+              <b>Exponential Distribution</b>.
+          </p>
+      </section>
+
+      <section>
+          <h2 id="properties">Properties</h2>
+
+          <p>
+              Expected values, propbabilities, mean, standard
+              deviation, median, percentiles, cumulative distribution
+              functions
+          </p>
       </section>
 
       <hr>
