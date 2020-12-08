@@ -36,100 +36,237 @@
       <section>
         <h2 id="contents">Contents</h2>
         <bold><a href="#introduction">Introduction</a></bold></br>
+        <bold><a href="#discrete">Discrete Sample Spaces</a></bold></br>
+        <bold><a href="#continuous">Continuous Sample Spaces</a></bold></br>
+        <bold><a href="#examples">Examples</a></bold></br>
+
       </section>
 
       <section>
         <h2 id="introduction">Introduction</h2>
         <p>
+          Density functions describe which sets of numbers are more
+          likely, and more specifically, exactly how likely any given
+          set of numbers is.  These functions assign density, hence
+          the name, to specific numbers, which is an analogous concept
+          to probability, but is not bounded above by \( 1 \).  The
+          higher the density, the more likely these numbers.  The
+          lower the density, the less likely these numbers.
+        </p>
+
+        <p>
+          Imagine you want to assign probabilities to the set
+          consisting of \( 0 \) and \( 1 \), namely \( S = \{0, 1\}
+          \).  You could use a density function to say that \( 0 \) is
+          more likely than \( 1 \), and specifically \( 0 \) should be
+          assigned the density \( 0.75 \). Because the space \( S \)
+          is countable, a peculiarity of discrete density functions
+          forces the number \( 1 \) to have density equal to \( 0.25
+          \).<span class="marginnote">This peculiarity does not hold
+          for density functions defined on uncountable spaces.</span>
+        </p>
+
+        <p>
+          Or maybe you're interested in assigning probabilities to the
+          set of positive real numbers, \( S = \mathbb{R}^+ \).  And
+          say the interval \( [0, 1) \) is more likely, and the
+          interval \( [1, \infty) \) is less likely.  Density
+          functions are a class of functions that provide structure to
+          assigning probability to sets of
+          numbers.<span class="marginnote">Technically, density
+          functions assign probability to some subsets of \( S \).
+          The better understand the qualifier some, see TODO.</span>
+        </p>
+
+        <p>
+          Density functions are inherently tied to distribution
+          functions, but most statisticians tend to think in terms of
+          the former.<span class="marginnote">The connection between a
+          density function and a distribution function is explained in
+          more detail below.  This same connection is also viewed in
+          reverse in the lecture notes TODO Distribution
+          Functions.</span>  The connection is so close that we often
+          say the density function of a specific, named, distribution.
+          Throughout these notes we will refer to density functions in
+          this way.
+        </p>
+
+        <p>
           Density functions play a prominent role in applied
           statistics, despite only existing in certain scenarios.  For
           now, we'll ignore these special cases and focus on gaining
           an understanding of density functions themselves, instead of
-          the greater context surrounding density functions.
+          the technical context surrounding density functions.
         </p>
 
+
         <p>
-          The easiest way to think about density functions is as
-          functions with a small set of properties.  The properties
-          that make an ordinary function \( f \) defined on a space \(
-          S \) a density function are <span class="marginnote">I use
-          the phrase density function to refer to both probability
-          mass functions and probability density functions.</span>
+          The easiest way to think about density functions is as a
+          class of functions, where the class is defined by only three
+          properties.  The properties that make an ordinary function
+          \( f \) defined on a space \( S \subset \mathbb{R}^D \) a
+          density function are <span class="marginnote">I use the
+          phrase density function to refer to both probability mass
+          functions and probability density functions.</span>
 
           <ol>
             <li> \( f \) is real-valued, \( f : S \rightarrow \mathbb{R} \),
+              
             <li> \( f \) is non-negative, for any \( x \in S \), \( f(x) \geq 0 \), and </li>
-            <li> the area under the function is equal to one, \( \int_{S} f = 1 \).
+            
+            <li> the area under the function is equal to one, \(
+            \mathbb{E}_f[\mathbb{I}_S] = 1
+            \).<span class="marginnote">We define both the expectation
+            operator \( \mathbb{E}_f \) and the indicator function \(
+            \mathbb{I}_A \) below.  For more details on the expection
+            operator and expected value see the the lecture notes on
+            TODO expectation.</span>
+              
           </ol>
         </p>
 
         <p>
-          I intentionally leave out the \( dx \) for a number of
-          reasons.  First, the meaning of \( dx \) is not obvious, see
-          the Section "Meaning of the symbol \( dx \)" on Wikipedia's
-          page on
-          the <a href="https://en.wikipedia.org/wiki/Integral#Meaning_of_the_symbol_dx">Integral</a>
-          or <a href="https://www.maa.org/press/maa-reviews/analysis-on-manifolds">Munkres'
-          "Analysis on Manifolds."</a> Second, and more practically
-          important for us, that integral absuses some more advanced
-          notation <span class="marginnote">Check out the Section
-          General Distribution Functions in Kyle Siegrist's OER
-          book <a href="https://stats.libretexts.org/Bookshelves/Probability_Theory/Book%3A_Probability_Mathematical_Statistics_and_Stochastic_Processes_(Siegrist)/03%3A_Distributions/3.09%3A_General_Distribution_Functions">Probability,
-          Mathematical Statistics, and Stochastic Processes</a> as
-          hosted
-          on <a href="https://libretexts.org/">LibreTexts.org</a>.</span>that
-          says, when the space \( S \) is countable, the integral
-          becomes a sum, and when that space \( S \) is uncountable
-          the integral is really an integral.
+          The operator \( \mathbb{E}_f \) is known as the expectation
+          operator and depends on the space on which the density
+          function is defined.  When the sample space is countable the
+          density function is said to be the density function of a
+          discrete distribution.  When the sample space is uncountable
+          the density function is said to be a density function of a
+          continuous distribution.  There's ample misuse of these
+          terms, but we'll stick with them anyway, as they are quite
+          common.
         </p>
 
         <p>
-            These lecture notes first introduce the two most common
-            structures of sample spaces for density functions,
-            discrete and continous.  Some examples follow, where we
-            describe a handful of scenarios where specific density
-            functions are employed.  The density functions highlighted
-            all come from well known and named distributions.  Last,
-            we explore some properties of density functions. 
+          These lecture notes will discuss discrete and then
+          continuous distributions, providing examples of more common
+          density functions for each.  Then we'll give some common
+          uses of density functions, providing references and links to
+          more thorough discussions of the particular uses.
         </p>
       </section>
 
       <section>
           <h2 id="discrete">Discrete Sample Spaces</h2>
           <p>
-              The third property above depends on the structure of the
-              space \( S \).  When \( S \) is a countable set, say \(
-              \mathbb{N} \), we have
+            Density functions defined on a countable sample space \( S
+              \) are said to be density functions of a discrete
+              distribution.  When \( S \) is countable, say \( S
+              \subset \mathbb{N} \), then the expectation operator \(
+              \mathbb{E}_f \) in the third property above becomes a
+              sum,<span class="marginnote">The symbol \(
+              \mathbb{I}_S(x) \) is an indicator function on the set
+              \( S \) that indicates when the argument \( x \) is
+              contained within the set \( S \).  When \( x \in S \),
+              then \( \mathbb{I}_S(x) = 1 \) and when \(x \not\in S
+              \), then \( \mathbb{I}_S(x) = 0 \).</span>
 
-              \[ \sum_{x \in S} f(x) = 1. \]
+            \[ \mathbb{E}_f[\mathbb{I}_S] = \sum_{x \in \mathbb{N}} \mathbb{I}_S(x) f(x) = 1. \]
+
+            Becasuse the summand takes on the value \( f(x) \)
+            whenever \(x \in S \) and \( 0 \) otherwise, this
+            expectation is saying that the area under the density
+            function sums to \( 1 \) within the set \( S \).  While
+            the notation might be new, this property is not
+            unexpected.  You probably already understood that the sum
+            of probabilities across all possible values must be one.
+            This idea comes from a property of density functions.
           </p>
 
           <p>
-              Let's try a simple example.  Consider a possibly unfair
-              coin, where we denote heads as one and tails as zero, so
-              that \( S =
-              \{0, 1\} \).  In this case, we'd call \( f \) the density
-              function of a Bernoulli distribution <span
-              class="marginnote">Check out my lecture notes on the
-              family of <a href="notes/bernoulli.html">Bernoulli
-              distributions</a>.</span> with parameter \( p \)
-              and has the following form
-
-              \[ f(x | p) = p^x (1 - p) ^{1 - x}. \]
+            A unique feature of density functions on countable spaces
+            is that probabilities of points are equal to the density
+            function evaluated at that point, \( \mathbb{P}[\{x\}] =
+            f(x) \).  This property is not true for density
+            functions defined on uncountable spaces.
           </p>
 
           <p>
-              You should verify that all three properties
-              above are met with the density function \( f(x | p) \)
-              defined for arbitrary \( p \in (0, 1) \).
+            The first two properties provide structure to the term
+            density, such that we can interpret density functions
+            analogous to probability.  The first property says that
+            density functions are real-valued, that is we should just
+            get out one number.  The second property tells us that we
+            will never get negative numbers from density functions,
+            even if we input a negative number.
           </p>
 
           <p>
-              A unique feature of density functions on countable spaces
-              is that probabilities of points are equal to the density
-              function evaluated at that point, \( \mathbb{P}[\{x\}] =
-              f(x) \).  This property is not true for density
-              functions defined on uncountable spaces.
+            <b>Example: Bernoulli
+              Distribution</b><span class="marginnote">For more
+              details, check out my lecture notes on the family
+              of <a href="notes/bernoulli.html">Bernoulli
+              Distributions</a>.</span>. The density function
+              associated with a Bernoulli distribution is defined on
+              two states \( 0 \) and \( 1 \), such that \( S = \{0,
+              1\} \).  In this case, we'd call \( f \) the density
+              function of a Bernoulli distribution with parameter \( p
+              \) and it has the following
+              form<span class="marginnote">The extra \( | \, p \)
+              notation in \( f(x \, | \, p) \) is used to emphasize
+              that this density function depends on the parameter \( p
+              \).  Since it is common to use the same symbol, here \(
+              f \), for all density functions, it helps to
+              differentiate density functions by the parameters that
+              they depend on.</span>
+
+              \[ f(x \, | \, p) = p^x (1 - p) ^{1 - x}. \]
+          </p>
+
+          <p>
+              You should verify that all three properties above are
+              met with this density function \( f(x\,|\,p) \) defined for
+              arbitrary \( p \in (0, 1) \).  If it helps, start with a
+              specific value for \( p =
+              \) <span class="probabilityp"></span>.
+          </p>
+
+          <p>
+            <b>Example: (Discrete) Uniform Distribution</b>.  The
+            density function associated with a discrete Uniform
+            distribution can be defined on any finite collection of
+            elements.  Each element is defined to have the same
+            density.  Here's well define the density function over
+            consecutive integers from \( a \) to \( b \), inclusive,
+            such that \( S = \{a, a + 1, \ldots, b - 1, b \} \).
+            
+            \[ f(x \, | \, a, b) = \frac{1}{b + a - 1}. \]
+          </p>
+
+          <p>
+            You should verify that all three properties above are met
+            with this density function \( f(x \, | \, a, b) \) defined
+            for arbitrary integers \(a, b \).  If it helps, start with
+            specific values for \(a = \) <span class="unifa"></span>
+            and \( b = \) <span class="unifb"></span>.
+          </p>
+
+          <p>
+            <b>Example: Poisson Distribution</b>.  The density
+            function associated with a Poisson distribution is defined
+            on the natural numbers, \( S = \mathbb{N} \), and is used to
+            model processes dealing with counts of arbitrary things
+            over time and/or space.  The density function depends on a
+            rate parameter \( \lambda \in \mathbb{R}^+ \) that
+            dictates the rate at which the things are counted.  When
+            \( \lambda \) is larger, more things are counted, on
+            average, in each unit of time and/or space.
+            
+            \[ f(x \, | \, \lambda) = \frac{\exp{(-\lambda)} \lambda^x}{x!} \]
+          </p>
+
+          <p>
+            You should verify that all three properties above are met
+            with this density function \( f(x \, | \, \lambda ) \)
+            defined for arbitrary rate parameter \( \lambda \).  If it
+            helps, start with specific value for TODO fill in randomly
+            selected lambda \( \lambda = \) <span class="poislambda"></span>.
+
+          </p>
+
+          <p>
+            <b>Other Examples</b>.
+            Binomial and Negative Binomial.
           </p>
       </section>
 
@@ -137,10 +274,10 @@
           <h2 id="continous">Continuous Sample Spaces</h2>
 
           <p>
-              When \( S \) is an uncountable space, say \( \mathbb{R}
-              \), we have
+              When \( S \) is an uncountable space, say \( S \subset \mathbb{R}
+              \), then the third property becomes
 
-              \[ \int_S f(x) dx. \]
+              \[ \mathbb{E}_f[\mathbb{I}_S] = \int_{\mathbb{R}} \mathbb{I}_S(x) f(x) dx = 1. \]
           </p>
 
           <p>
@@ -156,11 +293,31 @@
               You should verify that all three properties above are
               met with the density function \( f(x | \lambda) \)
               defined for arbitrary \( \lambda \in \mathbb{R}^+ \).
+              If it helps, start with a specific value for \( \lambda
+              = \) <span class="explambda"></span>
           </p>
+
+          <p>
+            TODO Exponential and Normal with some detail. Mention and link to
+            Gamma, Rayleigh, and Lognormal.
+          </p>
+          
       </section>
 
+      
+
       <section>
-          <h2 id="examples">Examples</h2>
+        <h2 id="examples">Examples</h2>
+
+        <p>
+          TODO examples should be interspersed in the text.
+        </p>
+        <p>
+          TODO change this sections to Uses, which can merge the ideas
+          of Take Aways below.  In Uses highlight describe processes
+          => likelihood, specify uncertainty (shape, mean, standard
+          deviation, percentiles) => Bayesian statistics.
+        </p>
 
           <p>
               Density functions are the basic building blocks of
@@ -173,79 +330,136 @@
               relatively simple tricks.
           </p>
 
-          <p>
-              <b>Bernoulli Distribution</b>.  The family of Bernoulli
-              distributions have a key characteristic that makes
-              identifying when to use the density function of a
-              Bernoulli distribution more obvious than most other
-              distributions.  The sample space \( S \) for a Bernoulli
-              distribution has exactly two elements, which are often
-              taken to be \( \{0, 1\} \) no matter what values the
-              real world process produces.  So long as there's only
-              two outcomes, label the one that is more interesting one
-              and the other zero.
-          </p>
+
 
           <p>
-              The classic example for a Bernoulli distribution is a
-              coin.  The Bernoullid distribution has a single parameter \(
-              p \), which statisticians to model the world by estimating
-              \( p \) from data.  Because the parameter \( p \) can be any
-              value in \( (0, 1) \), the density function of a Bernoulli
-              distribution is often used in more realistic scenarios. The
-              US presidential elections are often modeled with a Bernoulli
-              density function.
-          </p>
-
-          <p>
-              For a third example, imagine that you are interested in
-              testing a specific version of your web-browser.  You
-              randomly sample \( 1000 \) web-pages and load them on
-              your browser.  If a particular page loads correctly,
-              label it one.  If a particular page does not load
-              correctly, label it zero.  These \( 1000 \) data points
-              consisting of ones and zeros are called observations.
-              The data theoretically came from a Bernoulli
-              distribuiton with a value of \( p \) that is unknown.
-              Mathematical statisticians<span class="marginnote">Two
-              more popular techniques to estimating population
-              parameters are the <a
-                                     href="notes/likelihood.html">likelihood method</a> and
-              Bayesian statistics.</span>dream up mathematical ways to
-              estimate \( p \) using available data, and applied
-              statisticians use these mathematical tools to estimate
-              \( p \) using their \( 1000 \) observations and make
-              claims about the world based on their findings.
-          </p>
-
-          <p>
-              <b>Exponential Distribution</b>.
+              <b>Exponential Distribution</b>. TODO 
           </p>
       </section>
 
       <section>
-          <h2 id="properties">Properties</h2>
+        <h2 id="takeaway">Take Away</h2>
 
-          <p>
-              Expected values, propbabilities, mean, standard
-              deviation, median, percentiles, cumulative distribution
-              functions
-          </p>
+        <p>
+          The take away is that density functions are the means
+          through which applied statisticians model the world around
+          them.  When the process of interest has only two outcomes,
+          generally speaking, a Bernoulli distribution is recommended.
+          When counts are involved a Poisson distribution a reasonable
+          first step.  When the process of interest can only take on
+          positive numbers, a Gamma distribution is often, but not
+          exclusively, used.  And when all one cares about is
+          estimating the mean, then the Normal distribution is always
+          a favorite by application of the Central Limit Theorem.  In
+          an attempt to generalize this take away, since the world is
+          often not as simple as repeated if-else statements, think
+          about the quantification of the process you are interested
+          in.  Then imagine, what's the likely shape that repeated and
+          noisy observations of this process are likely to take on.
+          By imagining what noisily repeated observations of your
+          process might look like, you should be able to trace out at
+          least a sketch of a density function that is suitable to
+          your problem.
+        </p>
+
       </section>
-
+      
       <hr>
-      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
+        Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+      </a>
     </article>
 
     <script type="text/javascript">
+      function probability() {
+          let p = Math.floor(100 * Math.random()) / 100,
+              explambda = Math.floor(100 * Math.random()) / 10,
+              poislambda = Math.floor(100 * Math.random()) / 10,
+              unifa = Math.floor(10 * Math.random()),
+              unifb = Math.floor(100 * Math.random());
+          [unifa, unifb] = unifb < unifa ? [unifb - 1, unifa + 1] : [unifa, unifb];
 
-      let svgWidth = 400;
-      let svgHeight = svgWidth / 1.618;
+          d3.selectAll(".probabilityp")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(p)
+              .call(d3.drag()
+                    .on("drag", adjustp));
 
-      let margin = { top: 40, right: 20, bottom: 40, left: 60 },
-          width = svgWidth - margin.left - margin.right,
-          height = svgHeight - margin.top - margin.bottom;
+          d3.selectAll(".explambda")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(explambda)
+              .call(d3.drag()
+                    .on("drag", adjustExpLambda));
 
+          d3.selectAll(".poislambda")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(poislambda)
+              .call(d3.drag()
+                    .on("drag", adjustPoisLambda));
+
+          d3.selectAll(".unifa")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(unifa)
+              .call(d3.drag()
+                    .on("drag", adjustUnifA));
+
+          d3.selectAll(".unifb")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(unifb)
+              .call(d3.drag()
+                    .on("drag", adjustUnifB));
+
+          function adjustp() {
+              p += d3.event.dx / 100;
+              p = p < 0 ? 0 : p;
+              p = p > 1 ? 1 : p;
+
+              p = Math.round(p * 100) / 100;
+              d3.selectAll(".probabilityp")
+                  .text(p);
+          }
+          
+          function adjustExpLambda() {
+              explambda += d3.event.dx / 25;
+              explambda =  explambda < 0 ? 0.01 : explambda;
+              explambda = explambda > 10 ? 10 : explambda;
+
+              explambda = Math.round(explambda * 100) / 100;
+              d3.selectAll(".explambda")
+                  .text(explambda);
+          }
+
+          function adjustPoisLambda() {
+              poislambda += d3.event.dx / 25;
+              poislambda =  poislambda < 0 ? 0.01 : poislambda;
+              poislambda = poislambda > 10 ? 10 : poislambda;
+
+              poislambda = Math.round(poislambda * 100) / 100;
+              d3.selectAll(".poislambda")
+                  .text(poislambda);
+          }
+
+          function adjustUnifA() {
+              unifa += d3.event.dx / 25;
+              unifa =  unifa < 0 ? 0 : unifa;
+              unifa = unifa > unifb ? unifb : unifa;
+
+              unifa = Math.round(unifa);
+              d3.selectAll(".unifa")
+                  .text(unifa);
+          }
+
+          function adjustUnifB() {
+              unifb += d3.event.dx / 10;
+              unifb =  unifb < unifa ? unifa + 1 : unifb;
+              unifb = unifb > 100 ? 100 : unifb;
+
+              unifb = Math.round(unifb);
+              d3.selectAll(".unifb")
+                  .text(unifb);
+          }
+      };
+      probability();
     </script>
   </body>
 </html>
