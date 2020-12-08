@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Expected Value</title>
+    <link rel="stylesheet" href="tufte.min.css"/>
+    <style>
+      .katex { font-size: 0.95em !important; }
+      foreignObject { font-size: 2em; }
+    </style>
+    <!-- local D3 -->
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- fetch D3 -->
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+
+    <!-- local KaTeX -->
+    <link defer rel="stylesheet" href="katex.min.css">
+    <script defer src="katex.min.js" charset="uft-8"></script>
+    <script defer src="auto-render.min.js" charset="utf-8" onload="renderMathInElement(document.body);"></script>
+    <!-- fetch KaTeX-->
+    <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous"> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
+
+    <!-- local jStat -->
+    <script type="text/javascript" src="jstat.min.js"></script>
+    <!-- fetch jStat -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <article>
+      <h1 id="page">Expected Value</h1>
+      <p class="subtitle">Edward A. Roualdes</p>
+      <section>
+        <h2 id="contents">Contents</h2>
+        <bold><a href="#introduction">Introduction</a></bold></br>
+        <bold><a href="#expectation">Expected Value</a></bold></br>
+        <bold><a href="#cases">Special Cases</a></bold></br>
+        <bold><a href="#examples">Examples</a></bold></br>
+      </section>
+
+      <section>
+        <h2 id="introduction">Introduction</h2>
+        <p>
+          moar wordz
+        </p>
+
+      </section>
+
+      <section>
+        <h2 id="expectation">Expected Value</h2>
+
+        <p>
+        As alluded to in the Introduction, density functions only
+        exist in certain scenarios as (fancy) derivatives of
+        distribution functions.  When density functions do exist, we
+        tend to think of properties of the distribution functions via
+        operations defined using density functions and an arbitrary
+        function \( g : S \rightarrow \mathbb{R} \). Below are some of
+        the more common properties, defined by reference to specific
+        functions \( g \), of distribution functions, which can be
+        calculated using the respective density function.
+        </p>
+
+        <p>
+          <b>Expected Value</b>. In fact, all the properties below are
+          special cases of this more general concept, expected value.
+          Each property is defined relative to a particular function
+          \( g : S \rightarrow \mathbb{R} \).  Here we define expected
+          value with an arbitrary function \( g \), using the density
+          function \( f \) defined on the support \( S
+          \). <span class="marginnote">There's a slight abuse of
+          integral notation going on here.  The \( dx \) free integral
+          is really a sum in disguise, \( \int_S g(x) f(x) = \sum_{x
+          \in S} g(x) f(x) \), when \( S \) is countable, and is an
+          integral you're probably more used to otherwise. Pay
+          attention to the size of \( S \) in the examples
+          below.</span>
+
+          \[ \mathbb{E}_f[g] = \int_S g(x) f(x) \]
+        </p>
+      </section>
+      
+      <section>
+        <h2 id="cases">Special Cases</h2>
+        <p>
+          <b>Probability</b>. Let \( g(x) = 1[x \in A] \), where \(
+          1[x \in A] = 1 \) if \( x \in A \) and \( 0 \)
+          otherwise.<span class="marginnote">The function denoted \(
+          1[\cdot] \) is called an indicator function, because it
+          indicates when its argument is true.</span>
+          Then
+
+          \[ \mathbb{P}[A] = \int_S 1[x \in A] f(x) \]
+        </p>
+
+        <p>
+          Probability is thus area under the density function and
+          within the set \( A \), since \( 1[x \not\in A] = 0 \).
+        </p>
+
+        <p>
+          TODO add a picture of area under the curve, shaded only
+          within \( A \).
+        </p>
+
+        <p>
+          <b>Mean</b>. Take \( g \) as the identity function.  Let's
+          call it \( \iota : S \rightarrow \mathbb{R} \), defined for
+          each \( x \in S \) as \( \iota(x) = x \) and pronounced
+          iota.  Then
+
+          \[ \mathfrak{m} = \mathbb{E}[\iota] = \int_S x f(x) \]
+        </p>
+
+        <p>
+          The mean <span class="marginnote">The mean is sometimes
+          refered to as the expected value, leaving the more general
+          case \( \mathbb{E}[g] \) to be refered to as the
+          generalized expected value.</span>is so common that we give
+          it an alternative symbol, \( \mathfrak{m} \).  This is not a
+          common symbol choice, but I tend to prefer it over the more
+          common use of \( \mu \), which is then over-loaded with the
+          Normal distribuiton's measure of center, causing all sorts
+          of confusion.
+        </p>
+
+        <p>
+          The mean is the most well known of population parameters,
+          and is the quantity being estimated whenever you calculate a
+          mean from data.  By calculating a mean from data, one is
+          implicitly referencing a distribution function assumed to
+          describe the population of interest, and estimating its
+          unknown mean with the available
+          data.<span class="marginnote">In fact this is true for any
+          of the properties defined here. By estimating any of these
+          quantities, one is implicity referencing a distribution
+          function assumed to describe the population of interest,
+          whether or not one assumes a known form of the distribution.
+          As it goes, unfortunately, one does not even need to fully
+          understand the population from which the data came to
+          estimate a mean.  I mention these all too common, albeit
+          unfortunate occurences here, since the mean is the most
+          commonly esitmated parameter.</span>
+        </p>
+
+        <p>
+          <b>Variance</b>. Let \( g(x) = (x - \mathfrak{m})^2 \).  Then
+
+          \[ \mathfrak{v} = \mathbb{E}[(x - \mathfrak{m})^2] = \int_S (x - \mathfrak{m})^2 f(x) \]
+        </p>
+
+        <p>
+          <b>Standard Deviation</b>. The standard deviation is the
+          square root of the variance, and appears to be used more
+          often when referencing the univariate Normal distribution.
+
+          \[ \mathfrak{s} = \sqrt{\mathfrak{v}} = \sqrt{\mathbb{E}[(x - \mathfrak{m})^2]} \]
+        </p>
+
+        <p>
+          <b>Median</b>. Let \( g(x) = 1[x \le \mathfrak{p}_{50}] \).
+          Then define the median \( \mathfrak{p}_{50} \) as the
+          solution to the following equaiton
+
+          \[ \mathbb{E}[ 1[x \le \mathfrak{p}_{50}]] = \int_S 1[ x \le \mathfrak{p}_{50}] f(x) = 0.5 \]
+        </p>
+
+        <p>
+          <b>Percentile.</b> The median is just a specific case of a
+          more general definition, known as a percentile (or
+          quantile).  For a percentage \( p \), define \( g(x) = 1[x \le \mathfrak{p}_p] \).
+
+          \[ \mathbb{E}_f[\mathbb{I}[x \le \mathfrak{p}_{100p}]] = \int_S 1[ x \le \mathfrak{p}_{100p}] f(x) = p \]
+        </p>
+
+          <p>
+            <b>Cumulative Distribution Function</b>.  The cumulative
+            distribution function is a function \( F : S \rightarrow
+            [0, 1] \) defined by calculating all the area under the
+            function up to the point specified by the argument.  Since
+            we tend to this of our functions as arguments of \( x \),
+            I'll use \( x \) as the argument and use \( t \) as the
+            variable of integration. TODO define intervals and then use them
+            <!-- https://betanalpha.github.io/assets/case_studies/probability_theory.html#32_useful_expectations -->
+
+            \[ F(x) = \mathbb{E}_f[\mathbb{I}[t \leq x]] = \int_S \mathbb{I}[t \leq x] f(t) \]
+          </p>
+
+          <p>
+
+            The following
+            definition by most accounts should be here.
+            However, a word of caution is due.  This definition makes
+            it look like the cumulative distribution function is
+            defined by the density function, as if the density
+            function comes first and the cumulative distribution
+            function follows.  Technically speaking, this is
+            inaccurate.  And thus the placement of this
+            definition misleading.  Just let it be known, that
+            theoretically, the (cumulative) distribution function
+            comes first, from which density functions are defined.<span class="marginnote">Technically, the density function is a derivative of the distribution function and only sometimes exists. See TODO for more information.</span>
+          </p>
+      </section>
+
+      <hr>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
+    </article>
+
+    <script type="text/javascript">
+      function probability() {
+          let p = Math.floor(100 * Math.random()) / 100;
+          let lambda = Math.floor(100 * Math.random()) / 10;
+
+          d3.selectAll(".probabilityp")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(p)
+              .call(d3.drag()
+                    .on("drag", adjustp));
+
+          d3.selectAll(".ratelambda")
+              .attr("style", "border-bottom: 1px dotted #000;")
+              .text(lambda)
+              .call(d3.drag()
+                    .on("drag", adjustlambda));
+
+          function adjustp() {
+              p += d3.event.dx / 100;
+              p = p < 0 ? 0 : p;
+              p = p > 1 ? 1 : p;
+
+              p = Math.round(p * 100) / 100;
+              d3.selectAll(".probabilityp")
+                  .text(p);
+          }
+          
+          function adjustlambda() {
+              lambda += d3.event.dx / 25;
+              lambda =  lambda < 0 ? 0.01 : lambda;
+              lambda = lambda > 10 ? 10 : lambda;
+
+              lambda = Math.round(lambda * 100) / 100;
+              d3.selectAll(".ratelambda")
+                  .text(lambda);
+          }          
+      };
+      probability();
+    </script>
+  </body>
+</html>
