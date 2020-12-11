@@ -38,8 +38,7 @@
         <bold><a href="#introduction">Introduction</a></bold></br>
         <bold><a href="#discrete">Discrete Sample Spaces</a></bold></br>
         <bold><a href="#continuous">Continuous Sample Spaces</a></bold></br>
-        <bold><a href="#examples">Examples</a></bold></br>
-
+        <bold><a href="#uses">Uses</a></bold></br>
       </section>
 
       <section>
@@ -75,20 +74,26 @@
           assigning probability to sets of
           numbers.<span class="marginnote">Technically, density
           functions assign probability to some subsets of \( S \).
-          The better understand the qualifier some, see TODO.</span>
+          The better understand the qualifier some,
+          see <a href="https://stats.libretexts.org/Bookshelves/Probability_Theory/Book%3A_Probability_Mathematical_Statistics_and_Stochastic_Processes_(Siegrist)/02%3A_Probability_Spaces" target="_blank" rel="noopener">Chapter
+          2: Probability Spaces</a> in Kyle Siegrist's <a href="https://en.wikipedia.org/wiki/Open_educational_resources" target="_blank" rel="noopener">OER</a> book
+          "Probability, Mathematical Statistics, and Stochastic
+          Processes."</span>
         </p>
 
         <p>
           Density functions are inherently tied to distribution
           functions, but most statisticians tend to think in terms of
-          the former.<span class="marginnote">The connection between a
-          density function and a distribution function is explained in
-          more detail below.  This same connection is also viewed in
-          reverse in the lecture notes TODO Distribution
-          Functions.</span>  The connection is so close that we often
+          the former.  The connection is so close that we often
           say the density function of a specific, named, distribution.
           Throughout these notes we will refer to density functions in
-          this way.
+          this way.<span class="marginnote">There is one main
+          connection between a density function and a distribution
+          function, though the connection is viewed in two directions.
+          For details on the primary direction, see the lecture notes
+          TODO Distribution Functions, and for the secondary direction
+          see the lecture notes on <a href="lecturenotes">Expected
+          Value</a>.</span>
         </p>
 
         <p>
@@ -162,7 +167,9 @@
               \), then \( \mathbb{I}_S(x) = 0 \).</span>
 
             \[ \mathbb{E}_f[\mathbb{I}_S] = \sum_{x \in \mathbb{N}} \mathbb{I}_S(x) f(x) = 1. \]
+          </p>
 
+          <p>
             Becasuse the summand takes on the value \( f(x) \)
             whenever \(x \in S \) and \( 0 \) otherwise, this
             expectation is saying that the area under the density
@@ -259,14 +266,14 @@
             You should verify that all three properties above are met
             with this density function \( f(x \, | \, \lambda ) \)
             defined for arbitrary rate parameter \( \lambda \).  If it
-            helps, start with specific value for TODO fill in randomly
-            selected lambda \( \lambda = \) <span class="poislambda"></span>.
+            helps, start with specific value for \( \lambda =
+            \) <span class="poislambda"></span>.
 
           </p>
 
           <p>
-            <b>Other Examples</b>.
-            Binomial and Negative Binomial.
+            <b>Other Examples</b>. Binomial and Negative
+            Binomial. TODO add links.
           </p>
       </section>
 
@@ -274,20 +281,41 @@
           <h2 id="continous">Continuous Sample Spaces</h2>
 
           <p>
-              When \( S \) is an uncountable space, say \( S \subset \mathbb{R}
-              \), then the third property becomes
+              When \( S \) is an uncountable
+            space<span class="marginnote">We acknowledge that the
+            expectation operator \( \mathbb{E} \) knows how to deal
+            with different sizes of \( S \) associated with the
+            respective density functions \( f \) with the subscript,
+            \( \mathbb{E}_f \).</span>, say \( S \subset \mathbb{R}
+            \), then the third property becomes
 
               \[ \mathbb{E}_f[\mathbb{I}_S] = \int_{\mathbb{R}} \mathbb{I}_S(x) f(x) dx = 1. \]
           </p>
 
           <p>
-              Let's try an example. Consider the family of Exponential
-              Distributions, defined on \( S = \mathbb{R}^+ \), where
-              the density function depends on the population parameter
-              \( \lambda \in \mathbb{R}^+ \) and has the form
+            Becasuse the integrand takes on the value \( f(x) \)
+            whenever \(x \in S \) and \( 0 \) otherwise, this
+            expectation is saying that the area under the density
+            function integrates to \( 1 \) within the set \( S \).
+            This is the same idea as with density functions on
+            countable spaces summing to \( 1 \), now extended to
+            uncountable spaces.
+          </p>
+
+          <p>
+            <b>Example: Exponential
+              Distribution</b>.<span class="marginnote">Follow these
+              links TODO for more details on the family of Exponential
+              Distributions, or a generalization of it, the family of
+              Gamma Distributions.</span> Consider the family of
+              Exponential Distributions, defined on \( S =
+              \mathbb{R}^+ \), where the density function depends on
+              the population parameter \( \lambda \in \mathbb{R}^+ \)
+              and has the form
 
               \[ f(x | \lambda) = \lambda \exp{(-\lambda x)}. \]
           </p>
+
 
           <p>
               You should verify that all three properties above are
@@ -298,71 +326,116 @@
           </p>
 
           <p>
-            TODO Exponential and Normal with some detail. Mention and link to
-            Gamma, Rayleigh, and Lognormal.
-          </p>
-          
-      </section>
+            <b>Example: Normal Distribution.</b> The family of Normal
+            distribution is the most widely used family of
+            distributions.<span class="marginnote">Various TODO (add
+            link to) Central Limit Theorems justify the popularity of
+            the Normal distribution family.</span>  A Normal
+            distribution has two parameters, the location parameter \(
+            \mu \in \mathbb{R} \) and a scale parameter \( \sigma \in
+            \mathbb{R}^+ \).  The density function associated with the Normal distribution is defined on \( S = \mathbb{R} \) and has the form
 
-      
-
-      <section>
-        <h2 id="examples">Examples</h2>
-
-        <p>
-          TODO examples should be interspersed in the text.
-        </p>
-        <p>
-          TODO change this sections to Uses, which can merge the ideas
-          of Take Aways below.  In Uses highlight describe processes
-          => likelihood, specify uncertainty (shape, mean, standard
-          deviation, percentiles) => Bayesian statistics.
-        </p>
-
-          <p>
-              Density functions are the basic building blocks of
-              applied statisticians.<span class="marginnote">Density
-              functions are closely associated with named
-              distribution functions.  All the examples below will
-              highlight density function which come from a named
-              distribution.</span>  Their basic structure helps
-              statisticians model the stochastic world with some
-              relatively simple tricks.
+            \[ f(x \, | \, \mu, \sigma) = (2 \pi \sigma^2)^{-1/2} \exp{\left( (2\sigma^2)^{-1} (x - \mu)^2 \right)}. \]
           </p>
 
-
-
           <p>
-              <b>Exponential Distribution</b>. TODO 
+            <b>Other Examples.</b> Gamma, Rayleigh, Lognormal. TODO add links.
           </p>
       </section>
 
       <section>
-        <h2 id="takeaway">Take Away</h2>
+        <h2 id="uses">Uses</h2>
 
         <p>
-          The take away is that density functions are the means
-          through which applied statisticians model the world around
-          them.  When the process of interest has only two outcomes,
-          generally speaking, a Bernoulli distribution is recommended.
-          When counts are involved a Poisson distribution a reasonable
-          first step.  When the process of interest can only take on
-          positive numbers, a Gamma distribution is often, but not
-          exclusively, used.  And when all one cares about is
-          estimating the mean, then the Normal distribution is always
-          a favorite by application of the Central Limit Theorem.  In
-          an attempt to generalize this take away, since the world is
-          often not as simple as repeated if-else statements, think
-          about the quantification of the process you are interested
-          in.  Then imagine, what's the likely shape that repeated and
-          noisy observations of this process are likely to take on.
-          By imagining what noisily repeated observations of your
-          process might look like, you should be able to trace out at
-          least a sketch of a density function that is suitable to
-          your problem.
+          Density functions are often the means through which applied
+          statisticians model the world around them.  When the process
+          of interest has only two outcomes, generally speaking, a
+          Bernoulli distribution is recommended.  When counts are
+          involved a Poisson distribution a reasonable first step.
+          When the process of interest can only take on positive
+          numbers, a Gamma distribution is often, but not exclusively,
+          used.  And when all one cares about is estimating the mean,
+          then the Normal distribution is always a favorite by
+          application of the Central Limit Theorem.  In an attempt to
+          generalize this take away, since the world is often not as
+          simple as repeated if-else statements, think about the
+          quantification of the process you are interested in.  Then
+          imagine, what's the likely shape that repeated and noisy
+          observations of this process are likely to take on.  By
+          imagining what noisy repeated observations of your process
+          might look like and what values they could realistically
+          take on, you should be able to trace out at least a sketch
+          of a density function that is suitable to your problem.
         </p>
 
+        <p>
+          Once the applied statistician has the necessary density
+          functions in mind, they are used in, broadly speaking, one
+          of two methods to estimate the parameters of interest.  The
+          two methods are Bayesian statistics or the likelihood
+          method.  Very brief outlines of these methods are provided
+          below, with links to more detailed discussions.
+        </p>
+
+        <p>
+          <b>Example: Bayesian
+          Statistics</b>.<span class="marginnote">See the lecture
+          notes on <a href="lecturenotes/bayesian.html">Bayesian
+          Statistics</a> for more details.</span>  For not terribly
+          difficult reasons, albeit off topic here, Bayesian
+          statistics defines a posterior density funcition, which
+          we'll call \( \pi \).  This posterior density function
+          describes the updated information we have about the unkown
+          parameters \( \theta \in \mathbb{R}^D \) after learning
+          about them from a vector of observations \( \mathbf{x} \)
+          via the model contained in two other density functions.  The
+          density function \( f(\mathbf{x} \, | \, \theta) \) is often
+          called the likelihood or the model of our data \( \mathbf{x}
+          \) dependent on some unknown parameters \( \theta \), and
+          the density function \( p(\theta) \) is used to describe
+          background knowledge about the parameters that may or may
+          not be included in the data \( \mathbf{x} \).  The defintion
+          of the posterior density function is
+
+          \[ \pi(\theta \, | \, \mathbf{x}) = \frac{f( \mathbf{x} \, | \, \theta) p(\theta)} {\mathbb{E}_{p} [f]}. \]
+        </p>
+
+        <p>
+          Since the definition of the posterior density function is of
+          central importantce to Bayesian statistics, and it depends
+          on other density functions, this example highlights the
+          importance of density functions.
+        </p>
+
+        <p>
+          <b>Example: Likelihood</b>.<span class="marginnote"> See the
+          lecture notes on
+          the <a href="lecturenotes/likelihood.html">likelihood
+          method</a> for more details.</span> The likelihood method is
+          used to estimate population parameters \( \theta \in
+          \mathbb{R}^D \) given a vector of data \( \mathbf{x} \) via
+          the density function \( f( x \, | \, \theta) \).
+          Esimation is accomplished by use of the likelihood function.
+          The likelihood function is defined as a product of density
+          functions over the (assumed) independent observations \(
+          \mathbf{x} \)
+
+          \[ L(\theta \, | \, \mathbf{x}) = \prod_{n=1}^N f(x_n \, | \, \theta). \]
+        </p>
+
+        <p>
+          Since the likelihood method is the
+          other<span class="marginnote">I'm ignoring a few other
+          methods that, in my experience, seem less common, namely
+          method of moments, U statistics, and fiducial statistics.
+          Although, density functions show up in these methods as
+          well.</span>, different from Bayesian statistics, main
+          method used to learn about population parameters from data,
+          we see again that density functions play a key role in the
+          world of statistics.
+        </p>
       </section>
+
       
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
