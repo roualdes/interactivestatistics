@@ -38,13 +38,35 @@
         <bold><a href="#introduction">Introduction</a></bold></br>
         <bold><a href="#expectation">Expected Value</a></bold></br>
         <bold><a href="#cases">Special Cases</a></bold></br>
-        <bold><a href="#examples">Examples</a></bold></br>
       </section>
 
       <section>
         <h2 id="introduction">Introduction</h2>
         <p>
-          moar wordz
+          Expected values are technically properties of distribution
+          functions, but we often use expected values to help us
+          characterize the distribution itself.  Statisticians tend to
+          identify a particular distribution of interest and then
+          think about measures of location, which describe what values
+          are the most likely, and/or measures of spread, which
+          dictate the variability of the values of that particular
+          distribution.
+        </p>
+
+        <p>
+          These lecture notes first introduce the general definition
+          of expected value, defined relative to the density
+          function<span class="marginnote">It's good to note that
+          expected values need to be defined relative to a density
+          function, which itself may or may not exist. I choose to
+          define expected values relative to density functions which
+          are assumed to exist, because it is generally the only way
+          statisticians calculate expected values.</span>  of a
+          distribution and relative to an arbitrary function of
+          interst, which we will call \( g \).  The section Special
+          Cases gives some more common choices of the function \( g
+          \), from which statisticians have learned to characterize
+          distribution functions.
         </p>
 
       </section>
@@ -53,17 +75,16 @@
         <h2 id="expectation">Expected Value</h2>
 
         <p>
-        As alluded to in the Introduction, density functions only
-        exist in certain scenarios as (fancy) derivatives of
-        distribution functions.  When density functions do exist, we
-        tend to think of properties of the distribution functions via
-        operations defined using density functions and an arbitrary
-        function \( g : S \rightarrow \mathbb{R} \). Below are some of
-        the more common properties, defined by reference to specific
-        functions \( g \), of distribution functions, which can be
-        calculated using the respective density function.
+          When a density function of a distribution does exist, we
+          tend to think of properties of the distribution via
+          operations defined using the density function and an
+          arbitrary function \( g : S \rightarrow \mathbb{R} \). Below
+          are some of the more common properties, defined by reference
+          to specific functions \( g \), of distribution functions,
+          which can be calculated using the respective density
+          function.
         </p>
-
+        
         <p>
           <b>Expected Value</b>. In fact, all the properties below are
           special cases of this more general concept, expected value.
@@ -75,8 +96,8 @@
           integral notation going on here.  The \( dx \) free integral
           is really a sum in disguise, \( \int_S g(x) f(x) = \sum_{x
           \in S} g(x) f(x) \), when \( S \) is countable, and is an
-          integral you're probably more used to otherwise. Pay
-          attention to the size of \( S \) in the examples
+          integral you're probably more used to otherwise. Keep in
+          mind this dependence on the size of \( S \) in the examples
           below.</span>
 
           \[ \mathbb{E}_f[g] = \int_S g(x) f(x) \]
@@ -86,19 +107,20 @@
       <section>
         <h2 id="cases">Special Cases</h2>
         <p>
-          <b>Probability</b>. Let \( g(x) = 1[x \in A] \), where \(
-          1[x \in A] = 1 \) if \( x \in A \) and \( 0 \)
+          <b>Probability</b>. Let \( g(x) = \mathbb{I}_A(x) \), where
+          \( \mathbb{I}_A(x) = 1 \) if \( x \in A \) and \( 0 \)
           otherwise.<span class="marginnote">The function denoted \(
-          1[\cdot] \) is called an indicator function, because it
-          indicates when its argument is true.</span>
-          Then
+          \mathbb{I}_A(\cdot) \) is called an indicator function,
+          because it indicates when its argument is contained in the
+          set \( A \).</span>  Then
 
-          \[ \mathbb{P}[A] = \int_S 1[x \in A] f(x) \]
+          \[ \mathbb{P}[A] = \int_S \mathbb{I}_A(x) f(x) \]
         </p>
 
         <p>
           Probability is thus area under the density function and
-          within the set \( A \), since \( 1[x \not\in A] = 0 \).
+          within the set \( A \), since \( \mathbb{I}_A(x) = 0 \) when
+          \( x \not \in A \).
         </p>
 
         <p>
@@ -108,9 +130,9 @@
 
         <p>
           <b>Mean</b>. Take \( g \) as the identity function.  Let's
-          call it \( \iota : S \rightarrow \mathbb{R} \), defined for
-          each \( x \in S \) as \( \iota(x) = x \) and pronounced
-          iota.  Then
+          call it \( \iota \), pronounced iota, where \( \iota: S
+          \rightarrow \mathbb{R} \) is defined for each \( x \in S \)
+          as \( \iota(x) = x \).  Then
 
           \[ \mathfrak{m} = \mathbb{E}[\iota] = \int_S x f(x) \]
         </p>
@@ -118,13 +140,13 @@
         <p>
           The mean <span class="marginnote">The mean is sometimes
           refered to as the expected value, leaving the more general
-          case \( \mathbb{E}[g] \) to be refered to as the
-          generalized expected value.</span>is so common that we give
-          it an alternative symbol, \( \mathfrak{m} \).  This is not a
+          case \( \mathbb{E}[g] \) to be refered to as the generalized
+          expected value.</span>is so common that we give it an
+          alternative symbol, \( \mathfrak{m} \).  This is not a
           common symbol choice, but I tend to prefer it over the more
-          common use of \( \mu \), which is then over-loaded with the
-          Normal distribuiton's measure of center, causing all sorts
-          of confusion.
+          common use of \( \mu \), which is otherwise over-loaded with
+          the Normal distribuiton's measure of center, causing all
+          sorts of confusion.
         </p>
 
         <p>
@@ -160,6 +182,7 @@
           \[ \mathfrak{s} = \sqrt{\mathfrak{v}} = \sqrt{\mathbb{E}[(x - \mathfrak{m})^2]} \]
         </p>
 
+        008547111
         <p>
           <b>Median</b>. Let \( g(x) = 1[x \le \mathfrak{p}_{50}] \).
           Then define the median \( \mathfrak{p}_{50} \) as the

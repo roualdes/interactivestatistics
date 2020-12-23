@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8"/>
-    <title>Gamma Distribution</title>
+    <title>Beta Distribution</title>
     <link rel="stylesheet" href="tufte.min.css"/>
     <style>
      .katex { font-size: 0.95em !important; }
@@ -31,7 +31,7 @@
   </head>
   <body>
     <article>
-      <h1 id="page">Gamma Distribution</h1>
+      <h1 id="page">Beta Distribution</h1>
       <p class="subtitle">Edward A. Roualdes</p>
       <section>
         <h2 id="contents">Contents</h2>
@@ -44,13 +44,14 @@
       </section>
 
       <section>
-          <h2 id="gamma">Gamma Distribution</h2>
+          <h2 id="Beta">Beta Distribution</h2>
           <p>
               Words and such about the mean \( \mathfrak{m} = \) <span id="mean"></span> and standard deviation \( \mathfrak{s} = \) <span id="standarddeviation"></span>.
           </p>
 
-          <div id="gammadistribution"></div>
-          <p>\( \alpha =  \) <span id="alpha"></span> and \( \beta =  \) <span id="beta"></span>
+          <div id="betadistribution"></div>
+          <p>\( \alpha =  \) <span id="alpha"></span> and \( \beta =  \) <span id="beta"></span></p></p>.
+
       </section>
 
       <hr>
@@ -60,7 +61,7 @@
     </article>
 
     <script type="text/javascript">
-     function  Gamma() {
+     function  Beta() {
          let svgWidth = 640,
              svgHeight = svgWidth / 2;
 
@@ -68,7 +69,7 @@
              width = svgWidth - margin.left - margin.right,
              height = svgHeight - margin.top - margin.bottom;
 
-         let svg = d3.select("#gammadistribution")
+         let svg = d3.select("#betadistribution")
                      .append("svg")
                      .attr("width",  svgWidth)
                      .attr("height", svgHeight)
@@ -76,17 +77,15 @@
                      .attr("transform",
                            `translate( ${margin.left}, ${margin.top})`);
 
-         let support = [1e-5, Infinity],
-             alpha = 3,
-             beta = 1,
+         let support = [1e-5, 1 - 1e-5],
+             alpha = 1,
+             beta = 1.5,
              alpharange = [1, 10],
              betarange = [1, 10];
 
-         let RV = jStat.gamma(alpha, 1 / beta),
-             lb = Math.max(support[0],
-                           RV.mean() - 4 * Math.sqrt(RV.variance())),
-             ub = Math.min(support[1],
-                           RV.mean() + 4 * Math.sqrt(RV.variance())),
+         let RV = jStat.beta(alpha, beta),
+             lb = support[0],
+             ub = support[1],
              m = Math.round(RV.mean() * 10) / 10,
              s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -162,15 +161,13 @@
            .call(d3.drag()
                    .on("drag", () => {
                        alpha += d3.event.dx / 50;
-                       alpha = alpha < 0.1 ? 0.1 : alpha;
+                       alpha = alpha < 1 ? 1 : alpha;
                        alpha = alpha > 20 ? 20 : alpha;
                        alpha = Math.round(alpha * 10) / 10;
 
-                       let RV = jStat.gamma(alpha, 1 / +d3.select("#beta").text()),
-                           lb = Math.max(support[0],
-                                         RV.mean() - 4 * Math.sqrt(RV.variance())),
-                           ub = Math.min(support[1],
-                                         RV.mean() + 4 * Math.sqrt(RV.variance())),
+                       let RV = jStat.beta(alpha, +d3.select("#beta").text()),
+                           lb = support[0],
+                           ub = support[1],
                            m = Math.round(RV.mean() * 10) / 10,
                            s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -201,16 +198,14 @@
            .text(beta)
            .call(d3.drag()
                    .on("drag", () => {
-                       beta += d3.event.dx / 20;
-                       beta = beta < 0.1 ? 0.1 : beta;
+                       beta += d3.event.dx / 50;
+                       beta = beta < 1 ? 1 : beta;
                        beta = beta > 20 ? 20 : beta;
                        beta = Math.round(beta * 10) / 10;
 
-                       let RV = jStat.gamma(+d3.select("#alpha").text(), 1 / beta),
-                           lb = Math.max(support[0],
-                                         RV.mean() - 4 * Math.sqrt(RV.variance())),
-                           ub = Math.min(support[1],
-                                         RV.mean() + 4 * Math.sqrt(RV.variance())),
+                       let RV = jStat.beta(+d3.select("#alpha").text(), beta),
+                           lb = support[0],
+                           ub = support[1],
                            m = Math.round(RV.mean() * 10) / 10,
                            s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -243,7 +238,7 @@
          d3.select("#beta").text(beta);
      }
 
-     Gamma();
+     Beta();
     </script>
   </body>
 </html>

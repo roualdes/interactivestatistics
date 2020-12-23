@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Probability Distributions</title>
+    <link rel="stylesheet" href="tufte.min.css"/>
+    <style>
+      .katex { font-size: 0.95em !important; }
+      foreignObject { font-size: 2em; }
+    </style>
+    <!-- local D3 -->
+    <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
+    <!-- fetch D3 -->
+    <!-- <script src="https://d3js.org/d3.v5.min.js"></script> -->
+
+    <!-- local KaTeX -->
+    <link defer rel="stylesheet" href="katex.min.css">
+    <script defer src="katex.min.js" charset="uft-8"></script>
+    <script defer src="auto-render.min.js" charset="utf-8" onload="renderMathInElement(document.body);"></script>
+    <!-- fetch KaTeX-->
+    <!--   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css" integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous"> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz" crossorigin="anonymous"></script> -->
+    <!-- <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script> -->
+
+    <!-- local jStat -->
+    <script type="text/javascript" src="jstat.min.js"></script>
+    <!-- fetch jStat -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js"></script> -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <article>
+      <h1 id="page">Probability Distributions</h1>
+      <p class="subtitle">Edward A. Roualdes</p>
+      <p class="subtitle">December 2020</p>
+      <section>
+        <h2 id="contents">Contents</h2>
+        <bold><a href="#introduction">Introduction</a></bold></br>
+      </section>
+
+      <section>
+        <h2 id="introduction">Introduction</h2>
+        <p>
+          TODO clean up thinking out loud.  A probability distribution
+          is a function that assigns probability to some
+          subsets<span class="marginnote">Only measurable subsets of
+          the space \( \mathsf{S} \) are assigned probability.  See
+          section <a href="https://stats.libretexts.org/Bookshelves/Probability_Theory/Book%3A_Probability_Mathematical_Statistics_and_Stochastic_Processes_(Siegrist)/01%3A_Foundations/1.11%3A_Measurable_Spaces">Measurable
+          Spaces</a> in Kyle
+          Siegrist's <a href="https://en.wikipedia.org/wiki/Open_educational_resources">OER</a> <a href="https://stats.libretexts.org/Bookshelves/Probability_Theory/Book%3A_Probability_Mathematical_Statistics_and_Stochastic_Processes_(Siegrist)">book</a>.</span>
+          of a set \( \mathsf{S} \) via a function denoted \(
+          \mathbb{P} \).  Denote \( \mathcal{S} \) as the set of sets
+          that are assigned probability.  Then \( \mathbb{P}[A] \)
+          takes on a real number in \( [0, 1] \) for every \( A \in
+          \mathcal{S} \).  Probability distributions are thus set
+          functions, \( \mathbb{P}: \mathcal{S} \rightarrow [0, 1] \).
+          A probability distribution can be represented in a number of
+          different forms.  The two most common representations are
+          distribution functions or density functions.
+        </p>
+
+        <p>
+          Axioms of probability.
+        </p>
+
+        <p>
+          Use the rest of this as a jumping off point for other
+          various topics: introduction to probability (which should
+          maybe be renamed to arithmetic of probability or some such
+          title), distribution functions, density functions, and specific
+          density functions
+        </p>
+
+        <p>
+          A list of some guaranteed properties.  So far I can only
+          think of distribution functions.
+        </p>
+
+        <p>
+          The distribution function Distribution
+          functions <span class="marginnote">Distribution functions
+          are also known as cumulative distribution functions.</span>
+          are defined as
+
+          \[ F(x) = \int_{\mathsf{X}} \mathbb{I}_{[\mathsf{X}_{\min}, x]}(t) \mathbb{P}[dt] \]
+
+          where the notation \( \mathsf{X}_{\min} \) is meant to
+          capture the lower limit of the set \( \mathsf{X} \), which
+          could be \( -\infty \), \( 0 \), some \( a \in
+          \mathbb{R}^+\), or something more complex defined
+          appropriately for product spaces.
+        </p>
+
+        <p>
+          A density function is the derivative of the distribution
+          function, for some specific probability
+          distributon.<span class="marginnote">Density functions have
+          a slew of alternative names ranging from incredibly
+          specific, probability mass function when \( \mathsf{X} \)
+          is countable or probability density function when \(
+          \mathsf{X} \) is uncountable, or even just density, when
+          interested in brevity.</span>  When the probability
+          distribution is absolutely continuous with respect to a
+          reference measure \( \mu \), then there exists a function \(
+          f : \mathsf{X} \rightarrow \mathbb{R} \), known as the
+          density function relative to a measure \( \nu \), defined on
+          the same space as \( \mu \), such that
+
+          \[ \nu[A] = \int_A f d\mu \]
+
+          for all \( A \in \mathcal{X} \).  When \( f \) exists, then
+          we can define a distribution function from
+          it<span class="marginnote">The fact that a distribution
+          function can be written two different ways is a source of
+          much confusion about the existence of density
+          functions.</span>.  A distribution function can be defined
+          as
+
+          \[ F(x) = \mathbb{E}_f[\mathbb{I}_{[\mathsf{X}_{min}, x]}] \]
+        </p>
+
+        <p>
+          By going with \( \mathbb{E}_f \), I'm also bucking the trend
+          to annotate \( \mathbb{E} \) with the distribution function,
+          \( F \).  I should at least have side note admitting that
+          this notation is not common, and at times meaningless (like
+          when densities don't exist).  On the other hand, it's not
+          always clear how \( \mathbb{E}_F \) is to be calculated when
+          the density of \( F \) does not exist.  So really, I'm just
+          acknowledging in my notation that we are primarily
+          interested in expectations that have more obviously
+          calculable representations.
+        </p>
+
+        <p>
+          When density \( f \) does exist, we tend to think about it
+          as being indexed by a parameter \( \theta \in \Theta \subset
+          \mathbb{R} \), thus giving us a family of density functions.
+          Given our discussion above, that density functions
+          technically are derived as derivatives of distribution
+          functions, which themselves derive from probability
+          distributions, there is really a family of probability
+          distributions, which give rise to a family of density
+          functions.
+
+          \[ \mathbb{P}_{\theta}, F_{\theta}, f_{\theta}, \mathcal{S} \]
+        </p>
+
+        <p>
+          END thinking out loud.
+        </p>
+
+      </section>
+
+      <section>
+        <h2 id="finite">Probability Over Finite Sets</h2>
+
+        <p>
+          Before we get to a more theoretical treatment of
+          probability, let's introduce the notation of probability.
+          Syntactically, probability works like a function.  We'll use
+          the bold, capital letter p, \( \mathbb{P} \).
+        </p>
+
+        <p>
+          A probability function \( \mathbb{P} \) acts on sets, called
+          events in statistics, instead of numbers like you're
+          probably used to.  Hence, probability is a set
+          function.<span class="marginnote">Here's a refresher
+          on <a href="lecturenotes/sets.html">sets and set theory</a>,
+          in case you want it.</span> A function \( \mathbb{P} \)
+          acts on sets and returns a real number guaranteed to be in
+          the set \( [0, 1]
+          \).<span class="marginnote">Mathematically, we'd write \(
+          \mathbb{P}: S \rightarrow [0, 1] \)</span>
+        </p>
+
+        <p>
+          Notice that we have yet to specify how a function \(
+          \mathbb{P} \) maps sets to real numbers between \( 0 \) and
+          \(1 \).  So far, we've just said that it does this.  In
+          fact, the way a function \( \mathbb{P} \) maps sets to real
+          numbers between \( 0 \) and \( 1 \) can be quite complex.
+          Specifying more complex examples of \( \mathbb{P} \)  will be
+          discussed in greater detail under the topic of probability
+          distributions.  For now, let's consider a case of \(
+          \mathbb{P} \) specified on finite sets.
+        </p>
+
+        <p>
+          Consider the set \( S = \{1, 2, 3, 4, 5, 6\} \) and \( A =
+          \{2, 4, 6 \} \) a susbet of \( S \).  We seek to define a
+          set function that produces the probability \( 1/2 \) when
+          applied to \( A \), \( \mathbb{P}[A] = 1/2 \).  We'd also
+          like this same set function to be more general, such that it
+          produces similarly intuitive results for other subsets of \(
+          S \).
+        </p>
+
+        <p>
+          Luckily, since \( S \) is finite, a relatively simple
+          solution works here.  Put \( \mathbb{P} \) to be the set
+          function that maps arbitrary sets \( B \subset S \) to the fraction
+
+          \[ \mathbb{P}[B] = \frac{|B|}{|S|}. \]
+
+          Recall from the notes on <a href="sets.html">Basic Set
+          Theory</a> that the cardinality \( | \cdot | \) of a finite
+          set counts the elements.  Thus, if we applied this set
+          function to \( A \subset S \), we'd get \( \mathbb{P}[A] =
+          3/6 = 1/2 \), as desired.  With this more general definition
+          of \( \mathbb{P} \) applied to finite sets, we will hence
+          forward refer to it as a probability
+          distribution.<span class="marginnote">Such functions \(
+          \mathbb{P} \) are referred to as probability distributions
+          because they distribute probability across subsets of the
+          set \( S \) on which they act.</span>
+        </p>
+
+        <p>
+          The probability distribution above also yields other
+          intuitive results.  For instance, \( \mathbb{P}[\{1\}] = 1/6
+          \).  Or more generally, \( \mathbb{P}[\{s\}] = 1/6 \) for
+          any single element \(s \in S \).  This is the same logic
+          that yields equal probabilities and thus fairness in a coin,
+          a die, or a standard deck of cards.
+        </p>
+
+        <p>
+          There are other ways one could distribute probability across
+          a set \( S \) than what is defined above.  The specific
+          choice above yields intuitive results, but is not otherwise
+          special.  You could, for instance, define your own
+          probability distribution that assigns unequal weights to the
+          two sides of a coin.
+        </p>
+
+        <p>
+          We'll defer discussion about more complex versions of \(
+          \mathbb{P} \) until the notes Probability Distributions.
+          Below, we describe some general properties of arbitrary
+          probability distributions.  The three axioms of probability
+          are what separate general set functions from probability
+          distributions.  As an exercise throughout the next section,
+          verify that our probability distribution defined above meets
+          all the axioms of probability.
+        </p>
+
+      </section>
+
+      <section>
+        <h2 id="axioms">Axioms of Probability</h2>
+        <p>
+          Despite lacking one definition that satisfies all
+          statisticians, there are a few well established statements
+          about probability.  These are often called
+          the <a href="https://en.wikipedia.org/wiki/Probability_axioms">axioms
+          of probability</a>.
+        </p>
+
+        <p>
+          Let \( S \) be the set of all possible outcomes of interest,
+          often called the sample space.  Let \( A, A_1, A_2, \ldots,
+          \) be subsets of \( S \).  The first axiom of
+          probability<label for="axiom1" class="margin-toggle
+          sidenote-number"></label><input type="checkbox" id="axiom1"
+          class="margin-toggle"/><span class="sidenote">\(
+          \mathbb{P}[A] \geq 0 \) for any set \( A \subseteq S
+          \).</span> states that the probability of any set, say \( A
+          \) must be greater than or equal to \( 0 \).  The second
+          axiom of probability<label for="axiom2" class="margin-toggle
+          sidenote-number"></label><input type="checkbox" id="axiom2"
+          class="margin-toggle"/><span class="sidenote">\(
+          \mathbb{P}[S] = 1 \).</span> states that the probability of
+          all possible events of interest is equal to \( 1 \).  The
+          third axiom of probability<label for="axiom3"
+          class="margin-toggle
+          sidenote-number"></label><input type="checkbox" id="axiom3"
+          class="margin-toggle"/><span class="sidenote">\(
+          \mathbb{P}[\cup_{n = 1}^{\infty} A_n] = \sum_{n =
+          1}^{\infty} \mathbb{P}[A_n] \) if \( A_1, A_2, \ldots \) are
+          a <a href="https://en.wikipedia.org/wiki/Countable_set">countable</a>
+          sequence of pairwise disjoint sets.</span> state the
+          probabilty of disjoint sets is equal to the sum of the
+          probabilities of the sets.
+        </p>
+
+        <p>
+          The first and second axioms of probability insist that
+          probabilities must be bounded between \( 0 \) and \( 1 \).
+          Let \( A \) be the blue set below.  As first drawn, it has
+          probability \( \mathbb{P}[{\color{#00BFFF} A}] = \) <span id="PA"></span>, but
+          feel free to change it.
+        </p>
+
+        <div id="A1and2"></div>
+
+        <p>
+          The third axiom of probability will be better understood
+          with a simple example.  Consider the sample space of a fair
+          die.  Let \( S = \{1, 2, 3, 4, 5, 6 \} \) and let \( A_n =
+          \{ n \} \) for \(n = 2, 3, 4 \).  Notice that
+          \({\color{#FF6DAE}\cup_{n = 2}^4 A_n = \{ 2, 3, 4 \}} \).
+          We expect the probability of rolling a \( 2 \), a \( 3 \),
+          or a \( 4 \) to be \( 1/2 \) for a fair die.  This is
+          exactly what the third axiom of probability is telling us,
+          that you can sum together probabilities across disjoint
+          sets. Visually we can think of this as one half of the
+          sample space split into three equally sized disjoint sets,
+          counted as one event.
+        </p>
+          <div id="A3"></div>
+
+
+      <hr>
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
+        Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+      </a>
+    </article>
+
+    <script type="text/javascript">
+    </script>
+  </body>
+</html>
