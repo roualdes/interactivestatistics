@@ -83,10 +83,8 @@
 
 
          let RV = jStat.normal(mu, sigma),
-             lb = -bound,
-             /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
-             ub = bound,
-             /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+             lb = Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),
+             ub = Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),
              m = Math.round(RV.mean() * 10) / 10,
              s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -167,10 +165,8 @@
                        mu = Math.round(mu * 10) / 10;
 
                        let RV = jStat.normal(mu, +d3.select("#sigma").text()),
-                           lb = -bound,
-                           /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
-                           ub = bound,
-                           /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+                           lb = Math.max(support[0], RV.mean() - 5 * Math.sqrt(RV.variance())),
+                           ub = Math.min(support[1], RV.mean() + 5 * Math.sqrt(RV.variance())),
                            m = Math.round(RV.mean() * 10) / 10,
                            s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -202,15 +198,13 @@
            .call(d3.drag()
                    .on("drag", () => {
                        sigma += d3.event.dx / 10;
-                       sigma = sigma < 0.1 ? 0.1 : sigma;
-                       sigma = sigma > 300 ? 300 : sigma;
+                       sigma = sigma < 1 ? 1 : sigma;
+                       sigma = sigma > 50 ? 50 : sigma;
                        sigma = Math.round(sigma * 10) / 10;
 
                        let RV = jStat.normal(+d3.select("#mu").text(), sigma),
-                           lb = -bound,
-                           /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
-                           ub = bound,
-                           /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+                           lb = Math.max(support[0], RV.mean() - 5 * Math.sqrt(RV.variance())),
+                           ub = Math.min(support[1], RV.mean() + 5 * Math.sqrt(RV.variance())),
                            m = Math.round(RV.mean() * 10) / 10,
                            s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
@@ -221,7 +215,7 @@
                        };
 
                        xScale.domain(d3.extent(data, d => d.x));
-                       yScale.domain(d3.extent(data, d => d.y));
+                       yScale.domain([0, 0.4 / (s ** 0.5)]);
 
                        let xAxis = d3.axisBottom(xScale),
                            yAxis = d3.axisLeft(yScale);
@@ -250,11 +244,8 @@
                bound = bound / 10;
 
                let RV = jStat.normal(+d3.select("#mu").text(), +d3.select("#sigma").text()),
-                   lb = -bound,
-                   /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
-                   ub = bound;
-               /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
-
+                   lb = Math.max(support[0], RV.mean() - 5 * Math.sqrt(RV.variance())),
+                   ub = Math.min(support[1], RV.mean() + 5 * Math.sqrt(RV.variance()));
 
                let X = jStat.arange(lb, ub, 0.01),
                    data = [];
