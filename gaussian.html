@@ -99,7 +99,7 @@
                         .range([0, width]);
 
          var yScale = d3.scaleLinear()
-                        .domain(d3.extent(data, d => d.y))
+                        .domain([0, 0.4 / (s ** 0.5)])
                         .range([height, 0]);
 
          let line = d3.line()
@@ -116,6 +116,7 @@
 
          let xAxis = d3.axisBottom(xScale),
              yAxis = d3.axisLeft(yScale);
+
 
          svg.append("g")
             .attr("class", "x-axis")
@@ -177,7 +178,7 @@
                        };
 
                        xScale.domain(d3.extent(data, d => d.x));
-                       yScale.domain(d3.extent(data, d => d.y));
+                       yScale.domain([0, 0.4 / (s ** 0.5)]);
 
                        let xAxis = d3.axisBottom(xScale),
                            yAxis = d3.axisLeft(yScale);
@@ -190,7 +191,7 @@
                        d3.selectAll('#mu').text(mu);
                        d3.selectAll('#mean').text(m);
                        d3.selectAll('#standarddeviation').text(s);
-                   }));
+           }));
 
          d3.selectAll("#sigma")
            .attr("style", "border-bottom: 1px dotted #000;")
@@ -228,7 +229,7 @@
                        d3.selectAll('#sigma').text(sigma);
                        d3.selectAll('#mean').text(m);
                        d3.selectAll('#standarddeviation').text(s);
-                   }));
+           }));
 
          updateDensity(data);
          d3.select('#mean').text(m);
@@ -236,65 +237,6 @@
          d3.select("#mu").text(mu);
          d3.select("#sigma").text(sigma);
 
-
-         d3.select("#zoomin")
-           .attr("style", "border-bottom: 1px dotted #000;")
-           .on("click", () => {
-
-               bound = bound / 10;
-
-               let RV = jStat.normal(+d3.select("#mu").text(), +d3.select("#sigma").text()),
-                   lb = Math.max(support[0], RV.mean() - 5 * Math.sqrt(RV.variance())),
-                   ub = Math.min(support[1], RV.mean() + 5 * Math.sqrt(RV.variance()));
-
-               let X = jStat.arange(lb, ub, 0.01),
-                   data = [];
-               for (let n = 0; n < X.length; ++n) {
-                   data.push({x: X[n], y: RV.pdf(X[n])});
-               };
-
-               xScale.domain(d3.extent(data, d => d.x));
-               yScale.domain(d3.extent(data, d => d.y));
-
-               let xAxis = d3.axisBottom(xScale),
-                   yAxis = d3.axisLeft(yScale);
-
-               d3.select("g.x-axis").call(xAxis);
-               d3.select("g.y-axis").call(yAxis);
-
-               updateDensity(data);
-           });
-
-
-         d3.select("#zoomout")
-           .attr("style", "border-bottom: 1px dotted #000;")
-           .on("click", function() {
-               bound = bound * 10;
-
-               let RV = jStat.normal(+d3.select("#mu").text(), +d3.select("#sigma").text()),
-                   lb = -bound,
-                   /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
-                   ub = bound;
-               /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
-
-
-               let X = jStat.arange(lb, ub, 0.01),
-                   data = [];
-               for (let n = 0; n < X.length; ++n) {
-                   data.push({x: X[n], y: RV.pdf(X[n])});
-               };
-
-               xScale.domain(d3.extent(data, d => d.x));
-               yScale.domain(d3.extent(data, d => d.y));
-
-               let xAxis = d3.axisBottom(xScale),
-                   yAxis = d3.axisLeft(yScale);
-
-               d3.select("g.x-axis").call(xAxis);
-               d3.select("g.y-axis").call(yAxis);
-
-               updateDensity(data);
-           });
      }
 
      Gaussian();
