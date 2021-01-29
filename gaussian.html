@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="tufte.min.css"/>
     <style>
       .katex { font-size: 0.95em !important; }
-      foreignObject { font-size: 2em; }
+      foreignObject { font-size: 1.5em; }
     </style>
     <!-- local D3 -->
     <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
@@ -39,10 +39,20 @@
       </section>
 
       <section>
-        <h2 id="introduction">Introduction</h2>
-        TODO
+          <h2 id="introduction">Introduction</h2>
+          TODO
       </section>
-      
+
+      <section>
+          <h2 id="gaussian">Gaussian Distribution</h2>
+          <p>
+              Words and such about the mean \( \mathfrak{m} = \) <span id="mean"></span> and standard deviation \( \mathfrak{s} = \) <span id="standarddeviation"></span>.
+          </p>
+
+          <div id="gaussiandistribution"></div>
+          <p>\( \mu = \) <span id="mu"></span> and \( \sigma = \) <span id="sigma"></span>.  It would help to be able to <a id="zoomin">zoom in</a> and <a id="zoomout">zoom out</a></p>
+      </section>
+
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
         Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
@@ -50,6 +60,253 @@
     </article>
 
     <script type="text/javascript">
+     function  Gaussian() {
+         let svgWidth = 640,
+             svgHeight = svgWidth / 2;
+
+         let margin = { top: 20, right: 20, bottom: 40, left: 130 },
+             width = svgWidth - margin.left - margin.right,
+             height = svgHeight - margin.top - margin.bottom;
+
+         let svg = d3.select("#gaussiandistribution")
+                     .append("svg")
+                     .attr("width",  svgWidth)
+                     .attr("height", svgHeight)
+                     .append("g")
+                     .attr("transform",
+                           `translate( ${margin.left}, ${margin.top})`);
+
+         let support = [-Infinity, Infinity],
+             mu = 0,
+             sigma = 1,
+             bound = 300;
+
+
+         let RV = jStat.normal(mu, sigma),
+             lb = -bound,
+             /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
+             ub = bound,
+             /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+             m = Math.round(RV.mean() * 10) / 10,
+             s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+         let X = jStat.arange(lb, ub, 0.01),
+             data = [];
+         for (let n = 0; n < X.length; ++n) {
+             data.push({x: X[n], y: RV.pdf(X[n])});
+         };
+
+         var xScale = d3.scaleLinear()
+                        .domain(d3.extent(data, d => d.x))
+                        .range([0, width]);
+
+         var yScale = d3.scaleLinear()
+                        .domain(d3.extent(data, d => d.y))
+                        .range([height, 0]);
+
+         let line = d3.line()
+                      .x(d => xScale(d.x))
+                      .y(d => yScale(d.y));
+
+         svg.append("path")
+            .datum(data)
+            .attr("class", "density")
+            .attr("fill", "none")
+            .attr("stroke", "#00BFFF")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+         let xAxis = d3.axisBottom(xScale),
+             yAxis = d3.axisLeft(yScale);
+
+         svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform",
+                  `translate(0, ${height} )`)
+            .call(xAxis);
+
+         svg.append("foreignObject")
+            .attr("x", width / 2)
+            .attr("y", height + 20)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text("\\( x \\)");
+
+         svg.append("foreignObject")
+            .attr("class", "yaxis-label")
+            .attr("x", -120)
+            .attr("y", height / 3)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text(`\\( f(x | \\mu, \\sigma ) \\)`);
+
+         svg.append("g")
+            .attr("class", "y-axis")
+            .call(yAxis);
+
+         function updateDensity(data) {
+             d3.select("path.density")
+               .datum(data)
+               .attr("class", "density")
+               .attr("fill", "none")
+               .attr("stroke", "#00BFFF")
+               .attr("stroke-width", 2)
+               .attr("d", line);
+         }
+
+         d3.selectAll("#mu")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(mu)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       mu += d3.event.dx / 20;
+                       mu = mu < -20 ? -20 : mu;
+                       mu = mu > 20 ? 20 : mu;
+                       mu = Math.round(mu * 10) / 10;
+
+                       let RV = jStat.normal(mu, +d3.select("#sigma").text()),
+                           lb = -bound,
+                           /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
+                           ub = bound,
+                           /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+                           m = Math.round(RV.mean() * 10) / 10,
+                           s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+                       let X = jStat.arange(lb, ub, 0.01),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: RV.pdf(X[n])});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain(d3.extent(data, d => d.y));
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#mu').text(mu);
+                       d3.selectAll('#mean').text(m);
+                       d3.selectAll('#standarddeviation').text(s);
+                   }));
+
+         d3.selectAll("#sigma")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(sigma)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       sigma += d3.event.dx / 10;
+                       sigma = sigma < 0.1 ? 0.1 : sigma;
+                       sigma = sigma > 300 ? 300 : sigma;
+                       sigma = Math.round(sigma * 10) / 10;
+
+                       let RV = jStat.normal(+d3.select("#mu").text(), sigma),
+                           lb = -bound,
+                           /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
+                           ub = bound,
+                           /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+                           m = Math.round(RV.mean() * 10) / 10,
+                           s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+                       let X = jStat.arange(lb, ub, 0.01),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: RV.pdf(X[n])});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain(d3.extent(data, d => d.y));
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#sigma').text(sigma);
+                       d3.selectAll('#mean').text(m);
+                       d3.selectAll('#standarddeviation').text(s);
+                   }));
+
+         updateDensity(data);
+         d3.select('#mean').text(m);
+         d3.select('#standarddeviation').text(s);
+         d3.select("#mu").text(mu);
+         d3.select("#sigma").text(sigma);
+
+
+         d3.select("#zoomin")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .on("click", () => {
+
+               bound = bound / 10;
+
+               let RV = jStat.normal(+d3.select("#mu").text(), +d3.select("#sigma").text()),
+                   lb = -bound,
+                   /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
+                   ub = bound;
+               /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+
+
+               let X = jStat.arange(lb, ub, 0.01),
+                   data = [];
+               for (let n = 0; n < X.length; ++n) {
+                   data.push({x: X[n], y: RV.pdf(X[n])});
+               };
+
+               xScale.domain(d3.extent(data, d => d.x));
+               yScale.domain(d3.extent(data, d => d.y));
+
+               let xAxis = d3.axisBottom(xScale),
+                   yAxis = d3.axisLeft(yScale);
+
+               d3.select("g.x-axis").call(xAxis);
+               d3.select("g.y-axis").call(yAxis);
+
+               updateDensity(data);
+           });
+
+
+         d3.select("#zoomout")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .on("click", function() {
+               bound = bound * 10;
+
+               let RV = jStat.normal(+d3.select("#mu").text(), +d3.select("#sigma").text()),
+                   lb = -bound,
+                   /* Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),*/
+                   ub = bound;
+               /* Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),*/
+
+
+               let X = jStat.arange(lb, ub, 0.01),
+                   data = [];
+               for (let n = 0; n < X.length; ++n) {
+                   data.push({x: X[n], y: RV.pdf(X[n])});
+               };
+
+               xScale.domain(d3.extent(data, d => d.x));
+               yScale.domain(d3.extent(data, d => d.y));
+
+               let xAxis = d3.axisBottom(xScale),
+                   yAxis = d3.axisLeft(yScale);
+
+               d3.select("g.x-axis").call(xAxis);
+               d3.select("g.y-axis").call(yAxis);
+
+               updateDensity(data);
+           });
+     }
+
+     Gaussian();
     </script>
   </body>
 </html>
