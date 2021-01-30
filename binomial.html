@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="tufte.min.css"/>
     <style>
       .katex { font-size: 0.95em !important; }
-      foreignObject { font-size: 2em; }
+      foreignObject { font-size: 1.5em; }
     </style>
     <!-- local D3 -->
     <script type="text/javascript" src="d3.min.js" charset="utf-8"></script>
@@ -39,17 +39,198 @@
       </section>
 
       <section>
-        <h2 id="introduction">Introduction</h2>
-        TODO
+          <h2 id="introduction">Introduction</h2>
+          TODO
+      </section>
+
+      <section>
+          <h2 id="binomial">Binomial</h2>
+          <p>
+              The plot below represents the density function for the Binomial distribution with probability of success \( p = \) <span id="p"></span> and number of trials \( K = \) <span id="K"></span>.
+          </p>
+          <div id="binomialdistribution"></div>
       </section>
       
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
-        Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+          Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
       </a>
     </article>
 
     <script type="text/javascript">
+     function  Binomial() {
+         let svgWidth = 640,
+             svgHeight = svgWidth / 2;
+
+         let margin = { top: 20, right: 20, bottom: 40, left: 130 },
+             width = svgWidth - margin.left - margin.right,
+             height = svgHeight - margin.top - margin.bottom;
+
+         let svg = d3.select("#binomialdistribution")
+                     .append("svg")
+                     .attr("width",  svgWidth)
+                     .attr("height", svgHeight)
+                     .append("g")
+                     .attr("transform",
+                           `translate( ${margin.left}, ${margin.top})`);
+
+         let support = [0, Infinity],
+             p = 0.5,
+             K = 10;
+
+         let m = Math.round(p * K * 100) / 100,
+             s = Math.round(Math.sqrt(p * (1 - p) * K) * 100) / 100;
+         
+         let lb = 0,
+             ub = Math.round(m + 5 * s);
+
+         let X = jStat.arange(lb, ub, 1),
+             data = [];
+         for (let n = 0; n < X.length; ++n) {
+             data.push({x: X[n], y: jStat.binomial.pdf(X[n], K, p)});
+         };
+
+         var xScale = d3.scaleLinear()
+                        .domain(d3.extent(data, d => d.x))
+                        .range([0, width]);
+
+         var yScale = d3.scaleLinear()
+                        .domain([0, 0.25 / (s ** 0.5)])
+                        .range([height, 0]);
+
+         /* let line = d3.symbol()
+          *              .type("circle")
+          *              .x(d => xScale(d.x))
+          *              .y(d => yScale(d.y)); */
+
+         svg.append("points")
+            .data(data).enter()
+            .append("circle")
+            .attr("class", "density")
+            .attr("cx", d => xScale(d.x))
+            .attr("r", 5.5)
+            .attr("cy", d => yScale(d.y))
+            .attr("fill", "#00BFFF");
+
+         let xAxis = d3.axisBottom(xScale),
+             yAxis = d3.axisLeft(yScale);
+
+
+         svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform",
+                  `translate(0, ${height} )`)
+            .call(xAxis);
+
+         svg.append("foreignObject")
+            .attr("x", width / 2)
+            .attr("y", height + 20)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text("\\( k \\)");
+
+         svg.append("foreignObject")
+            .attr("class", "yaxis-label")
+            .attr("x", -120)
+            .attr("y", height / 3)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text(`\\( f(k | p, K ) \\)`);
+
+         svg.append("g")
+            .attr("class", "y-axis")
+            .call(yAxis);
+
+         function updateDensity(data) {
+             svg.select("points")
+                .data(data).enter()
+                .append("circle")
+                .attr("class", "density")
+                .attr("cx", d => xScale(d.x))
+                .attr("r", 5.5)
+                .attr("cy", d => yScale(d.y))
+                .attr("fill", "#00BFFF");
+         }
+
+         d3.selectAll("#p")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(p)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       p += d3.event.dx / 50;
+                       p = p < -1e-4 ? 1e-4 : p;
+                       p = p > 1 - 1e-4 ? 1 - 1e-4 : p;
+                       p = Math.round(p * 100) / 100;
+
+                       let m = Math.round(p * K * 10) / 10,
+                           s = Math.round(Math.sqrt(p * (1 - p) * K) * 10) / 10;
+                       
+                       let lb = 0,
+                           ub = Math.round(m + 5 * s);
+
+                       let X = jStat.arange(lb, ub, 1),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: jStat.binomial.pdf(X[n], K, p)});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain([0, 0.25 / (s ** 0.5)]);
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#p').text(p);
+           }));
+
+         d3.selectAll("#K")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(K)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       K += d3.event.dx / 10;
+                       K = K < 1 ? 1 : K;
+                       K = K > 20 ? 20 : K;
+                       K = Math.round(K);
+
+                       let m = Math.round(p * K * 10) / 10,
+                           s = Math.round(Math.sqrt(p * (1 - p) * K) * 10) / 10;
+                       
+                       let lb = 0,
+                           ub = Math.round(m + 5 * s);
+
+                       let X = jStat.arange(lb, ub, 1),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: jStat.binomial.pdf(X[n], K, p)});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain([0, 0.25 / (s ** 0.5)]);
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#K').text(K);
+           }));
+
+         updateDensity(data);
+         d3.select("#p").text(p);
+         d3.select("#K").text(K);
+     }
+     Binomial();
     </script>
   </body>
 </html>

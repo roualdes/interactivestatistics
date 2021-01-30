@@ -44,13 +44,11 @@
       </section>
 
       <section>
-          <h2 id="gaussian">Gaussian Distribution</h2>
+          <h2 id="gaussian">Gaussian</h2>
           <p>
-              Words and such about the mean \( \mathfrak{m} = \) <span id="mean"></span> and standard deviation \( \mathfrak{s} = \) <span id="standarddeviation"></span>.
+              Words and such about the mean \( \mathfrak{m} = \) <span id="mu"></span> and standard deviation \( \mathfrak{s} = \) <span id="sigma"></span>.
           </p>
-
           <div id="gaussiandistribution"></div>
-          <p>\( \mu = \) <span id="mu"></span> and \( \sigma = \) <span id="sigma"></span>.  It would help to be able to <a id="zoomin">zoom in</a> and <a id="zoomout">zoom out</a></p>
       </section>
 
       <hr>
@@ -83,8 +81,8 @@
 
 
          let RV = jStat.normal(mu, sigma),
-             lb = Math.max(support[0], RV.mean() - 4 * Math.sqrt(RV.variance())),
-             ub = Math.min(support[1], RV.mean() + 4 * Math.sqrt(RV.variance())),
+             lb = Math.max(support[0], RV.mean() - 5 * Math.sqrt(RV.variance())),
+             ub = Math.min(support[1], RV.mean() + 5 * Math.sqrt(RV.variance())),
              m = Math.round(RV.mean() * 10) / 10,
              s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
 
