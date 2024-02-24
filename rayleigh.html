@@ -42,7 +42,7 @@
         <h2 id="introduction">Introduction</h2>
         TODO
       </section>
-      
+
       <hr>
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">
         Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
@@ -50,6 +50,190 @@
     </article>
 
     <script type="text/javascript">
+     function  Gamma() {
+         let svgWidth = 640,
+             svgHeight = svgWidth / 2;
+
+         let margin = { top: 20, right: 20, bottom: 40, left: 130 },
+             width = svgWidth - margin.left - margin.right,
+             height = svgHeight - margin.top - margin.bottom;
+
+         let svg = d3.select("#gammadistribution")
+                     .append("svg")
+                     .attr("width",  svgWidth)
+                     .attr("height", svgHeight)
+                     .append("g")
+                     .attr("transform",
+                           `translate( ${margin.left}, ${margin.top})`);
+
+         let support = [1e-5, Infinity],
+             alpha = 3,
+             beta = 1,
+             alpharange = [1, 10],
+             betarange = [1, 10];
+
+         let RV = jStat.gamma(alpha, 1 / beta),
+             lb = Math.max(support[0],
+                           RV.mean() - 4 * Math.sqrt(RV.variance())),
+             ub = Math.min(support[1],
+                           RV.mean() + 4 * Math.sqrt(RV.variance())),
+             m = Math.round(RV.mean() * 10) / 10,
+             s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+         let X = jStat.arange(lb, ub, 0.01),
+             data = [];
+         for (let n = 0; n < X.length; ++n) {
+             data.push({x: X[n], y: RV.pdf(X[n])});
+         };
+
+         var xScale = d3.scaleLinear()
+                        .domain(d3.extent(data, d => d.x))
+                        .range([0, width]);
+
+         var yScale = d3.scaleLinear()
+                        .domain(d3.extent(data, d => d.y))
+                        .range([height, 0]);
+
+         let line = d3.line()
+                      .x(d => xScale(d.x))
+                      .y(d => yScale(d.y));
+
+         svg.append("path")
+            .datum(data)
+            .attr("class", "density")
+            .attr("fill", "none")
+            .attr("stroke", "#00BFFF")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+         let xAxis = d3.axisBottom(xScale),
+             yAxis = d3.axisLeft(yScale);
+
+         svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform",
+                  `translate(0, ${height} )`)
+            .call(xAxis);
+
+         svg.append("foreignObject")
+            .attr("x", width / 2)
+            .attr("y", height + 20)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text("\\( x \\)");
+
+         svg.append("foreignObject")
+            .attr("class", "yaxis-label")
+            .attr("x", -120)
+            .attr("y", height / 3)
+            .attr("width", 100)
+            .attr("height", 50)
+            .append('xhtml:div')
+            .text(`\\( f(x | \\alpha, \\beta ) \\)`);
+
+         svg.append("g")
+            .attr("class", "y-axis")
+            .call(yAxis);
+
+         function updateDensity(data) {
+             d3.select("path.density")
+               .datum(data)
+               .attr("class", "density")
+               .attr("fill", "none")
+               .attr("stroke", "#00BFFF")
+               .attr("stroke-width", 2)
+               .attr("d", line);
+         }
+
+         d3.selectAll("#alpha")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(alpha)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       alpha += d3.event.dx / 50;
+                       alpha = alpha < 1 ? 1 : alpha;
+                       alpha = alpha > 20 ? 20 : alpha;
+                       alpha = Math.round(alpha * 10) / 10;
+
+                       let RV = jStat.gamma(alpha, 1 / +d3.select("#beta").text()),
+                           lb = Math.max(support[0],
+                                         RV.mean() - 4 * Math.sqrt(RV.variance())),
+                           ub = Math.min(support[1],
+                                         RV.mean() + 4 * Math.sqrt(RV.variance())),
+                           m = Math.round(RV.mean() * 10) / 10,
+                           s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+                       let X = jStat.arange(lb, ub, 0.01),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: RV.pdf(X[n])});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain(d3.extent(data, d => d.y));
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#alpha').text(alpha);
+                       d3.selectAll('#mean').text(m);
+                       d3.selectAll('#standarddeviation').text(s);
+                   }));
+
+         d3.selectAll("#beta")
+           .attr("style", "border-bottom: 1px dotted #000;")
+           .text(beta)
+           .call(d3.drag()
+                   .on("drag", () => {
+                       beta += d3.event.dx / 50;
+                       beta = beta < 1 ? 1 : beta;
+                       beta = beta > 20 ? 20 : beta;
+                       beta = Math.round(beta * 10) / 10;
+
+                       let RV = jStat.gamma(+d3.select("#alpha").text(), 1 / beta),
+                           lb = Math.max(support[0],
+                                         RV.mean() - 4 * Math.sqrt(RV.variance())),
+                           ub = Math.min(support[1],
+                                         RV.mean() + 4 * Math.sqrt(RV.variance())),
+                           m = Math.round(RV.mean() * 10) / 10,
+                           s = Math.round(Math.sqrt(RV.variance()) * 10) / 10;
+
+                       let X = jStat.arange(lb, ub, 0.01),
+                           data = [];
+                       for (let n = 0; n < X.length; ++n) {
+                           data.push({x: X[n], y: RV.pdf(X[n])});
+                       };
+
+                       xScale.domain(d3.extent(data, d => d.x));
+                       yScale.domain(d3.extent(data, d => d.y));
+
+                       let xAxis = d3.axisBottom(xScale),
+                           yAxis = d3.axisLeft(yScale);
+
+                       d3.select("g.x-axis").call(xAxis);
+                       d3.select("g.y-axis").call(yAxis);
+
+                       updateDensity(data);
+
+                       d3.selectAll('#beta').text(beta);
+                       d3.selectAll('#mean').text(m);
+                       d3.selectAll('#standarddeviation').text(s);
+                   }));
+
+         updateDensity(data);
+         d3.select('#mean').text(m);
+         d3.select('#standarddeviation').text(s);
+         d3.select("#alpha").text(alpha);
+         d3.select("#beta").text(beta);
+     }
+
+     Rayleigh();
     </script>
   </body>
 </html>

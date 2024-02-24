@@ -255,7 +255,7 @@
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International</a>
     </article>
     <script type="text/javascript">
-      
+
       let svgWidth = 400;
       let svgHeight = svgWidth / 1.618;
 
@@ -263,7 +263,7 @@
       let margin = { top: 20, right: 20, bottom: 40, left: 60 },
           width = svgWidth - margin.left - margin.right,
           height = svgHeight - margin.top - margin.bottom;
-      
+
       function dieset() {
           let svg = d3.select("#dieset")
               .append("svg")
@@ -271,48 +271,40 @@
               .attr("height", 75)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          
+
           let xScale = d3.scaleLinear()
               .domain([-1, 9])
               .range([0, width]);
 
           let xAxis = d3.axisBottom(xScale);
-          
+
           svg.append("g")
               .attr("class", "xaxis")
               .attr("fill", "black")
               .attr("stroke-width", 2)
+              .style("font-size", "18px")
               .call(xAxis
                     .tickValues(d3.range(0, 9))
                     .tickFormat(d3.format(",.0f"))
                     .tickSizeOuter([0]))
               .call(g => g.selectAll("text")
+                    .filter((d, i) => (i <= 0) || (i >= 7))
                     .remove())
               .call(g => g.selectAll("path")
                     .attr("stroke-opacity", 0.25))
               .call(g => g.selectAll(".tick")
                     .filter((d, i) => (i < 1) || ( i > 6))
-                    .attr("stroke-opacity", 0.25))
-              .call(g => g.selectAll(".tick")
-                    .filter((d, i) => (i > 0) && (i < 7))
-                    .each(function(d, i) {
-                        d3.select(this)
-                            .append("foreignObject")
-                            .attr("x", -3)
-                            .attr("y", 10)
-                            .attr("width", 20)
-                            .attr("height", 20)
-                            .append("xhtml:text")
-                            .text(`\\( ${i+1} \\)`)}));
-
+                    .attr("stroke-opacity", 0.25));
 
           svg.append("path")
               .attr("class", "right-arrow")
+              .attr("opacity", 0.25)
               .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
               .attr("transform", `translate(${width}, 0) rotate(90)`);
 
           svg.append("path")
               .attr("class", "left-arrow")
+              .attr("opacity", 0.25)
               .attr("d", d3.symbol().type(d3.symbolTriangle).size(25))
               .attr("transform", `rotate(-90)`);
       }
@@ -325,7 +317,7 @@
               .attr("height", 75)
               .append("g")
               .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          
+
           let xScale = d3.scaleLinear()
               .domain([-1, 2])
               .range([0, width]);
@@ -336,25 +328,15 @@
               .attr("class", "xaxis")
               .attr("fill", "black")
               .attr("stroke-width", 2)
+              .style("font-size", "18px")
               .call(xAxis
                     .tickValues([0, 1])
                     .tickFormat(d3.format(",.0f"))
                     .tickSizeOuter([0]))
-              .call(g => g.selectAll("text")
-                    .remove())
+              // .call(g => g.selectAll("text")
+              //       .remove())
               .call(g => g.selectAll("path")
-                    .attr("stroke-opacity", 0.25))
-              .call(g => g.selectAll(".tick")
-                    .filter((d, i) => (i == 0) || (i == 1))
-                    .each(function(d, i) {
-                        d3.select(this)
-                            .append("foreignObject")
-                            .attr("x", -3)
-                            .attr("y", 10)
-                            .attr("width", 20)
-                            .attr("height", 20)
-                            .append("xhtml:text")
-                            .text(`\\( ${i} \\)`)}));
+                    .attr("stroke-opacity", 0.25));
 
           svg.append("line")
               .attr("x1", xScale(0))
@@ -385,7 +367,7 @@
               .attr("height", svgHeight)
               .append("g")
               .attr("transform", `translate( ${margin.left + 50}, ${margin.top})`);
-          
+
           let xScale = d3.scaleLinear()
               .domain([0, 4])
               .range([0, width]);
@@ -438,7 +420,7 @@
               data.push({x: tmpx, y: tmpx * tmpx});
           };
 
-          // line  travels along function
+          // line travels along function
           let focus = svg.append('line')
               .attr("x1", 0)
               .attr("y1", 0)
@@ -462,7 +444,7 @@
               .attr('height', height)
               .on('mouseover', mouseover)
               .on('mousemove', mousemove)
-              .on('mouseout', mouseout);                   
+              .on('mouseout', mouseout);
 
           let line = d3.line()
               .x(d => xScale(d.x))
@@ -476,7 +458,7 @@
               .attr("stroke-width", 2)
               .attr("stroke-opacity", 0.25)
               .attr("d", line);
-          
+
           svg.append("line")
               .attr("x1", xScale(0))
               .attr("y1", yScale(5))
@@ -495,7 +477,7 @@
                   .attr("stroke-dasharray", (3, 3));
               focus2.attr("stroke-opacity", 1)
                   .attr("stroke-dasharray", (3, 3));
-          }              
+          }
 
           let bisect = d3.bisector(d => d.x).left;
 
@@ -589,7 +571,7 @@
 
       }
       subset();
-      
+
       function union() {
           let svg = d3.select("#union")
               .append("svg")
@@ -722,7 +704,7 @@
               .attr("cy", height / 2)
               .attr("fill", "none")
               .attr("stroke", "black");
-          
+
           events.append("foreignObject")
               .attr("x", width / 3)
               .attr("y", height / 2)

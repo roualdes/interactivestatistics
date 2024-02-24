@@ -65,32 +65,85 @@
         </p>
 
         <p>
-          Use the rest of this as a jumping off point for other
-          various topics: introduction to probability (which should
-          maybe be renamed to arithmetic of probability or some such
-          title), distribution functions, density functions, and specific
-          density functions
+            Probability distributions are rather vague because they
+            are so abstract.  So long as \( \mathbb{P} \) maps
+            appropriate sets in \( \mathcal{S} \) to real numbers in
+            the interval \( [0, 1] \), such that the axioms of
+            probability are satisfied, then all is well
+            mathematically.  However, in practice this can leave much
+            to be desired.  In example, aside from simple examples
+            where \( \mathsf{S} = \{0, 1\} \), it's not easy to
+            specify all the way in which a probability distribution
+            might actually map appropriate sets in \( \mathcal{S} \)
+            to real numbers in \( [0, 1] \).
         </p>
 
         <p>
-          A list of some guaranteed properties.  So far I can only
-          think of distribution functions.
+            Often statisticians resort to implicitly assuming that a
+            density function representation exists and then proceed to
+            characterize the probability distribution itself via
+            expected values of some choice functions.  In these
+            settings, it's only through the expected values that
+            statisticians interpret probability distributions.
         </p>
 
         <p>
-          The distribution function Distribution
-          functions <span class="marginnote">Distribution functions
-          are also known as cumulative distribution functions.</span>
-          are defined as
-
-          \[ F(x) = \int_{\mathsf{X}} \mathbb{I}_{[\mathsf{X}_{\min}, x]}(t) \mathbb{P}[dt] \]
-
-          where the notation \( \mathsf{X}_{\min} \) is meant to
-          capture the lower limit of the set \( \mathsf{X} \), which
-          could be \( -\infty \), \( 0 \), some \( a \in
-          \mathbb{R}^+\), or something more complex defined
-          appropriately for product spaces.
+            Below I provide the classic example of a family of
+            probability distirbutions defined with respect to the set
+            \( \mathsf{S} = \{0, 1\} \), and use this example to
+            provide a tangible example to the more general language
+            that follows.  After this example, I provide TODO (what am
+            I saying?) some general topics, each of which will require
+            further reading.  Links are provided to the topics beyond
+            the scope of this page.
         </p>
+
+        <p>
+            Topics beyond the scope of this page: introduction to
+            probability (which should maybe be renamed to arithmetic
+            of probability or some such title that doesn't so easily
+            conflate with this page), distribution functions, density
+            functions, and specific density functions.
+        </p>
+
+        <section>
+            <h2 id="bernoulli">Family of Bernoulli Distributions</h2>
+
+            Small example that links to Bernoulli Distribution page
+            and highlights: \( \mathsf{S} = \{0,1\} \), density
+            function (in this case) corresponds the probability
+            distribution, distribution function.
+        </section>
+
+        <section>
+            <h2 id="distributionfunction">Distribution Functions</h2>
+
+            <p>
+                Distribution functions <span class="marginnote">Distribution functions
+                are also known as cumulative distribution functions.</span>
+                are defined as TODO probably need to say something
+                about only univariate distributions here.
+
+                \[ F(x) = \int_{\mathsf{X}}
+                \mathbb{I}_{[\mathsf{X}_{\min}, x]}(t) \mathbb{P}[dt]
+                \]
+
+                where the notation \( \mathsf{X}_{\min} \) is meant to
+                capture the lower limit of the set \( \mathsf{X} \),
+                which could be \( -\infty \), \( 0 \), some \( a \in
+                \mathbb{R}^+\).
+            </p>
+
+            <p>
+                TODO Probably need to say something about density
+                functions only sometimes existing.  And see below for
+                a more common definition of distribution functions,
+                namely when the density function exists.
+            </p>
+        </section>
+
+        <section>
+            <h2 id="densityfunction">Density Functions</h2>
 
         <p>
           A density function is the derivative of the distribution
@@ -130,7 +183,15 @@
           the density of \( F \) does not exist.  So really, I'm just
           acknowledging in my notation that we are primarily
           interested in expectations that have more obviously
-          calculable representations.
+            calculable representations.
+        </p>
+
+        <p>
+            On the other hand,
+
+            \[ F(x) = \mathbb{E}_{F}[\mathbb{I}_{[\mathsf{X}_{min}, x]}] \]
+
+            is really rather circular.
         </p>
 
         <p>
@@ -154,7 +215,7 @@
       </section>
 
       <section>
-        <h2 id="finite">Probability Over Finite Sets</h2>
+        <h2 id="uniform">Family of Discrete Uniform Distribution</h2>
 
         <p>
           Before we get to a more theoretical treatment of
@@ -249,68 +310,6 @@
 
       </section>
 
-      <section>
-        <h2 id="axioms">Axioms of Probability</h2>
-        <p>
-          Despite lacking one definition that satisfies all
-          statisticians, there are a few well established statements
-          about probability.  These are often called
-          the <a href="https://en.wikipedia.org/wiki/Probability_axioms">axioms
-          of probability</a>.
-        </p>
-
-        <p>
-          Let \( S \) be the set of all possible outcomes of interest,
-          often called the sample space.  Let \( A, A_1, A_2, \ldots,
-          \) be subsets of \( S \).  The first axiom of
-          probability<label for="axiom1" class="margin-toggle
-          sidenote-number"></label><input type="checkbox" id="axiom1"
-          class="margin-toggle"/><span class="sidenote">\(
-          \mathbb{P}[A] \geq 0 \) for any set \( A \subseteq S
-          \).</span> states that the probability of any set, say \( A
-          \) must be greater than or equal to \( 0 \).  The second
-          axiom of probability<label for="axiom2" class="margin-toggle
-          sidenote-number"></label><input type="checkbox" id="axiom2"
-          class="margin-toggle"/><span class="sidenote">\(
-          \mathbb{P}[S] = 1 \).</span> states that the probability of
-          all possible events of interest is equal to \( 1 \).  The
-          third axiom of probability<label for="axiom3"
-          class="margin-toggle
-          sidenote-number"></label><input type="checkbox" id="axiom3"
-          class="margin-toggle"/><span class="sidenote">\(
-          \mathbb{P}[\cup_{n = 1}^{\infty} A_n] = \sum_{n =
-          1}^{\infty} \mathbb{P}[A_n] \) if \( A_1, A_2, \ldots \) are
-          a <a href="https://en.wikipedia.org/wiki/Countable_set">countable</a>
-          sequence of pairwise disjoint sets.</span> state the
-          probabilty of disjoint sets is equal to the sum of the
-          probabilities of the sets.
-        </p>
-
-        <p>
-          The first and second axioms of probability insist that
-          probabilities must be bounded between \( 0 \) and \( 1 \).
-          Let \( A \) be the blue set below.  As first drawn, it has
-          probability \( \mathbb{P}[{\color{#00BFFF} A}] = \) <span id="PA"></span>, but
-          feel free to change it.
-        </p>
-
-        <div id="A1and2"></div>
-
-        <p>
-          The third axiom of probability will be better understood
-          with a simple example.  Consider the sample space of a fair
-          die.  Let \( S = \{1, 2, 3, 4, 5, 6 \} \) and let \( A_n =
-          \{ n \} \) for \(n = 2, 3, 4 \).  Notice that
-          \({\color{#FF6DAE}\cup_{n = 2}^4 A_n = \{ 2, 3, 4 \}} \).
-          We expect the probability of rolling a \( 2 \), a \( 3 \),
-          or a \( 4 \) to be \( 1/2 \) for a fair die.  This is
-          exactly what the third axiom of probability is telling us,
-          that you can sum together probabilities across disjoint
-          sets. Visually we can think of this as one half of the
-          sample space split into three equally sized disjoint sets,
-          counted as one event.
-        </p>
-          <div id="A3"></div>
 
 
       <hr>
